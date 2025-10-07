@@ -1,0 +1,29 @@
+# Archivos de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Binarios y compilados
+bin/
+obj/
+Debug/
+Release/
+out/
+
+# Archivos de dependencias
+packages/
+*.nupkg
+*.snupkg
+
+# Configuraciones locales
+appsettings.Development.json
+*.dbmdl
+*.mdf
+*.ldf
+
+# Archivos de publicación y logs
+*.log
+*.tlog
+*.tmp
