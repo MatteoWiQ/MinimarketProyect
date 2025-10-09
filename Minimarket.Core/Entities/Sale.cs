@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Minimarket.Infraestructure.Data;
+namespace Minimarket.Core.Entidades;
 
-public partial class VwSaleTotal
+public partial class Sale
 {
-    public int SaleId { get; set; }
+    public int Id { get; set; }
 
     public string CustomerName { get; set; } = null!;
 
@@ -18,4 +18,8 @@ public partial class VwSaleTotal
     public bool IsDone { get; set; }
 
     public decimal TotalAmount { get; set; }
+
+    public virtual User? Customer { get; set; }
+
+    public virtual ICollection<ProductInSale> ProductInSales { get; set; } = new List<ProductInSale>();
 }

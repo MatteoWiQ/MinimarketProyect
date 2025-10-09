@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Minimarket.Core.Entities;
+namespace Minimarket.Core.Entidades;
 
 public partial class User
 {
     public int Id { get; set; }
+
     public string UserType { get; set; } = null!;
+
     public string FirstName { get; set; } = null!;
+
     public string LastName { get; set; } = null!;
-    public string Email { get; set; } = null!;
-    public DateOnly DateOfBirth { get; set; }
-    public string Telephone { get; set; } = null!;
+
+    public string? Email { get; set; }
+
+    public DateOnly? DateOfBirth { get; set; }
+
+    public string? Telephone { get; set; }
+
     public bool IsActive { get; set; }
+
     public DateTime CreatedAt { get; set; }
+
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

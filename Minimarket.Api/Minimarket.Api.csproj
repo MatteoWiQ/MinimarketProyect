@@ -16,5 +16,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
   </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\Minimarket.Core\Minimarket.Core.csproj" />
+		<ProjectReference Include="..\Minimarket.Infraestructure\Minimarket.Infraestructure.csproj" />
+	</ItemGroup>
 </Project>

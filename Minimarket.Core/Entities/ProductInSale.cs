@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Minimarket.Infraestructure.Data;
+namespace Minimarket.Core.Entidades;
 
 public partial class ProductInSale
 {

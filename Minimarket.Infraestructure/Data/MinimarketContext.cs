@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Minimarket.Core.Entidades;
 
 namespace Minimarket.Infraestructure.Data;
 

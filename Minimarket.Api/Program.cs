@@ -1,39 +1,32 @@
 using Microsoft.EntityFrameworkCore;
-
+using Minimarket.Core.Interface;
 using Minimarket.Core.Services;
+using Minimarket.Core.Validator;
+using Minimarket.Infraestructure.Mappings;
+using Minimarket.Infraestructure.Data;
+using Minimarket.Infraestructure.Repositories;
+
 internal class Program
 {
     private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+        builder.Services.AddScoped<CreateUserValidator>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IUserRespository, UserRepository>();
         // Add services to the container.
+        builder.Services.AddDbContext<MinimarketContext>(options =>
+    options.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=True;TrustServerCertificate=True;"));
 
         builder.Services.AddControllers();
-
         var app = builder.Build();
 
 
         
 
-        // Test de conexión al arrancar (opcional, para debugging)
-        using (var scope = app.Services.CreateScope())
-        {
-            var ctx = scope.ServiceProvider.GetRequiredService<MinimarketContext>();
-            var canConnect = await ctx.Database.CanConnectAsync();
-            Console.WriteLine($"Database.CanConnect: {canConnect}");
-
-            if (canConnect)
-            {
-                // Ejemplo: contar productos
-                var count = await ctx.Products.CountAsync();
-                Console.WriteLine($"Productos en DB: {count}");
-            }
-            else
-            {
-                Console.WriteLine("No fue posible conectar a la base de datos.");
-            }
-        }
+        
 
         app.MapControllers();
         app.Run();
