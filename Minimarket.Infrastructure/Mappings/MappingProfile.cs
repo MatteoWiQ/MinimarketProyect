@@ -20,6 +20,8 @@ namespace Minimarket.Infraestructure.Mappings
             CreateMap<ProductDto, Product>();
             CreateMap<SaleDto, Sale>();
             CreateMap<Sale, SaleDto>();
+            CreateMap<ProductInSale, ProductInSaleDto>();
+            CreateMap<ProductInSaleDto, ProductInSale>();
         }
     }
 }

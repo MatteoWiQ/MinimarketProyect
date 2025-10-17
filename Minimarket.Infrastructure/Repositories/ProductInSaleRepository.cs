@@ -19,10 +19,9 @@ namespace Minimarket.Infrastructure.Repositories
         }
         public async Task<IEnumerable<ProductInSale>> GetAllBySaleIdAsync(int IdSale)
         {
-            var productsInSale = await _context.ProductInSales
-                .Where(pis => pis.IdSale == IdSale)
-                .ToListAsync();
-            return productsInSale;
+         
+            var products = await _context.ProductInSales.Where(pis => pis.IdSale == IdSale).ToListAsync();
+            return products;
         }
         
         public async Task DeleteAsync(ProductInSale productInSale)

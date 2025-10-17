@@ -7,7 +7,7 @@ namespace Minimarket.Core.Interfaces
         Task<IEnumerable<ProductInSale>> GetAllAsync(int idSale);
         Task<bool> CreateAsync(ProductInSale productInSale);
         Task<bool> UpdateAsync(ProductInSale productInSale);
-        Task<bool> DeleteAsync(int IdSale);
+        Task<bool> DeleteAsync(int IdSale, int IdProduct);
 
     }
 }

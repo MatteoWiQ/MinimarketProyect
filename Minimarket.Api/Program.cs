@@ -26,7 +26,7 @@ internal class Program
         builder.Services.AddScoped<UserDtoValidator>();
         builder.Services.AddScoped<ProductDtoValidator>();
         builder.Services.AddScoped<SaleDtoValidator>();
-        builder.Services.AddScoped<ProductInSaleValidator>();
+        builder.Services.AddScoped<ProductInSaleDtoValidator>();
 
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IProductService, ProductService>();
@@ -48,7 +48,7 @@ internal class Program
         builder.Services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<ProductDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<SaleDtoValidator>();
-        builder.Services.AddValidatorsFromAssemblyContaining<ProductInSaleValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<ProductInSaleDtoValidator>();
         // Add services to the container.
         builder.Services.AddDbContext<MinimarketContext>(options =>
     options.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=True;TrustServerCertificate=True;"));

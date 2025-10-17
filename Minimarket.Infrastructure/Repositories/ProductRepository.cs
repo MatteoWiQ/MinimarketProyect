@@ -28,9 +28,8 @@ namespace Minimarket.Infraestructure.Repositories
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(u => u.Id == id);
+            var product =  await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
             return product;
-
         }
 
         public async Task AddAsync(Product product)

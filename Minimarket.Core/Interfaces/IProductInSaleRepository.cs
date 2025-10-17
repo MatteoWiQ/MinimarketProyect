@@ -10,6 +10,7 @@ namespace Minimarket.Core.Interfaces
     public interface IProductInSaleRepository
     {
         Task<IEnumerable<ProductInSale>> GetAllBySaleIdAsync(int saleId);
+        // Retornar lista de productos en una venta
         Task<ProductInSale> GetByIdAsync(int id);
         Task AddAsync(ProductInSale productInSale);
         Task UpdateAsync(ProductInSale productInSale);

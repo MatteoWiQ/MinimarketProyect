@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Minimarket.Core.Data.Entities;
+using Minimarket.Infrastructure.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Minimarket.Infrastructure.Validations
 {
-    public class ProductInSaleValidator : AbstractValidator<ProductInSale>
+    public class ProductInSaleDtoValidator : AbstractValidator<ProductInSaleDto>
     {
-        public ProductInSaleValidator() { }
+        public ProductInSaleDtoValidator() { }
 
         public void ValidateProductInSale(ProductInSale productInSale)
         {

@@ -1,7 +1,9 @@
 ﻿using Minimarket.Core.Data.Entities;
+using Minimarket.Core.Interface;
 using Minimarket.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,21 +14,28 @@ namespace Minimarket.Core.Services
     {
         private readonly IProductInSaleRepository _repo;
         private readonly ISaleRepository _saleRepo;
-        ProductInSaleService(IProductInSaleRepository repo, ISaleRepository saleRepo)
+        private readonly IProductRepository _productRepo;
+        public ProductInSaleService(IProductInSaleRepository repo, ISaleRepository saleRepo, IProductRepository productRepo)
         {
             _repo = repo;
             _saleRepo = saleRepo;
+            _productRepo = productRepo;
         }
 
         public async Task<IEnumerable<ProductInSale>> GetAllAsync(int idSale)
         {
 
-            var productsInSale = await _repo.GetAllBySaleIdAsync(idSale);
-            return productsInSale;
+
+            return await _repo.GetAllBySaleIdAsync(idSale);
         }
         public async Task<bool> CreateAsync(ProductInSale productInSale)
         {
-            // Verificar si el id de la venta existe
+            var validationResult = await _productRepo.GetByIdAsync(productInSale.IdProduct);
+            if (validationResult == null)
+            {
+                throw new Exception("El producto en la venta no existe.");
+            }
+
             var sale = await _saleRepo.GetByIdAsync(productInSale.IdSale);
             if (sale == null)
             {
@@ -37,22 +46,38 @@ namespace Minimarket.Core.Services
         }
         public async Task<bool> UpdateAsync(ProductInSale productInSale)
         {
+            var validationResult = await _productRepo.GetByIdAsync(productInSale.IdProduct);
+            if (validationResult == null)
+            {
+                throw new Exception("El producto en la venta no existe.");
+            }
+            if (validationResult == null) {
+                throw new Exception("El producto en la venta no existe.");
+            }
             var existingProductInSale = await _repo.GetByIdAsync(productInSale.IdProduct);
             if (existingProductInSale == null)
             {
-                return false;
+                throw new Exception("El producto en la venta no existe.");
             }
             await _repo.UpdateAsync(productInSale);
             return true;
         }
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int IdSale, int IdProduct)
         {
-            var productInSale = await _repo.GetByIdAsync(id);
+            var productInSale = await _repo.GetAllBySaleIdAsync(IdSale);
             if (productInSale == null)
             {
-                return false;
+                throw new Exception("El IdSale no coincide con el producto en la venta.");
             }
-            await _repo.DeleteAsync(productInSale);
+
+            // Buscar por IdProduct en la lista de productos en la venta
+            var product = productInSale.FirstOrDefault(p => p.IdProduct == IdProduct);
+            if (product == null)
+            {
+                throw new Exception("El producto no se encuentra en la venta.");
+            }
+
+            await _repo.DeleteAsync(product);
             return true;
         }
 
