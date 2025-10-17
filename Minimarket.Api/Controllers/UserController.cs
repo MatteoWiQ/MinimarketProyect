@@ -20,13 +20,11 @@ namespace Minimarket.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        private readonly UserDtoValidator _userValidator;
         private readonly IValidatorService _validatorService;
-        public UserController(IUserService userService, IMapper mapper, UserDtoValidator userValidator, IValidatorService validatorService)
+        public UserController(IUserService userService, IMapper mapper, IValidatorService validatorService)
         {
             _userService = userService;
             _mapper = mapper;
-            _userValidator = userValidator;
             _validatorService = validatorService;
         }
         [HttpGet("dto/mapper")]
@@ -50,8 +48,8 @@ namespace Minimarket.Api.Controllers
         [HttpPost("dto/mapper/")]
         public async Task<IActionResult> InsertUser([FromBody] UserDto userDto)
         {
-            //try
-            //{
+            try
+            {
                 var validationResult = await _validatorService.ValidateAsync(userDto);
 
                 if (!validationResult.IsValid)
@@ -65,12 +63,12 @@ namespace Minimarket.Api.Controllers
                 var response = new ApiResponse<User>(user);
 
                 return Ok(response);
-            //}
-            //catch (Exception ex)
-            //{
-                //return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
 
-            //}
+            }
         }
 
         [HttpPut("dto/mapper/{id}")]

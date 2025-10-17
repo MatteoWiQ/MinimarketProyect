@@ -20,6 +20,7 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+
         builder.Services.AddScoped<UserDtoValidator>();
         builder.Services.AddScoped<ProductDtoValidator>();
         builder.Services.AddScoped<IUserService, UserService>();
