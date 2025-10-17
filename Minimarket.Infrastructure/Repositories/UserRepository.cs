@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Minimarket.Infraestructure.Repositories
 {
-    public class UserRepository : IUserRespository
+    public class UserRepository : IUserRepository
     {
         private readonly MinimarketContext _context;
         public UserRepository(MinimarketContext ctx)

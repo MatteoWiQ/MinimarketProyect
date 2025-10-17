@@ -11,9 +11,9 @@ namespace Minimarket.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRespository _repo;
+        private readonly IUserRepository _repo;
 
-        public UserService(IUserRespository repo)
+        public UserService(IUserRepository repo)
         {
             _repo = repo;
         }

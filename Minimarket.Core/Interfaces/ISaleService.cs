@@ -7,5 +7,6 @@ namespace Minimarket.Core.Interfaces
         Task<Sale> GetByIdAsync(int id);
         Task InsertAsync(Sale sale);
         Task UpdateAsync(Sale sale);
+        
     }
 }

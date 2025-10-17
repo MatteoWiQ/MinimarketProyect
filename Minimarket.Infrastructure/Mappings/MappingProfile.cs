@@ -2,6 +2,7 @@
 using Minimarket.Core.Data.Entities;
 using Minimarket.Core.Dtos;
 using Minimarket.Infraestructure.Dtos;
+using Minimarket.Infrastructure.Dtos;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,8 @@ namespace Minimarket.Infraestructure.Mappings
             CreateMap<UserDto, User>();
             CreateMap<Product, ProductDto>();
             CreateMap<ProductDto, Product>();
+            CreateMap<SaleDto, Sale>();
+            CreateMap<Sale, SaleDto>();
         }
     }
 }

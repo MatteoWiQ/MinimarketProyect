@@ -12,6 +12,8 @@ using Minimarket.Infraestructure.Mappings;
 using Minimarket.Infraestructure.Validations;
 using Minimarket.Infrastructure.Data.Context;
 using Minimarket.Infrastructure.Validations;
+using Minimarket.Core.Interfaces;
+using Minimarket.Infrastructure.Repositories;
 
 internal class Program
 {
@@ -23,10 +25,19 @@ internal class Program
 
         builder.Services.AddScoped<UserDtoValidator>();
         builder.Services.AddScoped<ProductDtoValidator>();
+        builder.Services.AddScoped<SaleDtoValidator>();
+        builder.Services.AddScoped<ProductInSaleValidator>();
+
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IProductService, ProductService>();
-        builder.Services.AddScoped<IUserRespository, UserRepository>();
+        builder.Services.AddScoped<ISaleService, SaleService>();
+        builder.Services.AddScoped<IProductInSaleService, ProductInSaleService>();
+
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+        builder.Services.AddScoped<IProductInSaleRepository, ProductInSaleRepository>();
+
         builder.Services.AddScoped<IValidatorService, ValidationService>();
         builder.Services.AddScoped<ValidationFilter>();
         
@@ -36,6 +47,8 @@ internal class Program
         });
         builder.Services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<ProductDtoValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<SaleDtoValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<ProductInSaleValidator>();
         // Add services to the container.
         builder.Services.AddDbContext<MinimarketContext>(options =>
     options.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=True;TrustServerCertificate=True;"));

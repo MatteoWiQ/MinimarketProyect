@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Minimarket.Core.Interface
 {
-    public interface IUserRespository
+    public interface IUserRepository
     {
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetByIdAsync(int id);
