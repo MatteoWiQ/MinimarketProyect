@@ -39,10 +39,17 @@ namespace Minimarket.Api.Controllers
         [HttpGet("dto/mapper/{id}")]
         public async Task<IActionResult> getUserById(int id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            var userDto = _mapper.Map<UserDto>(user);
-            var response = new ApiResponse<UserDto>(userDto);
-            return Ok(response);
+            try
+            {
+                var user = await _userService.GetByIdAsync(id);
+                var userDto = _mapper.Map<UserDto>(user);
+                var response = new ApiResponse<UserDto>(userDto);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPost("dto/mapper/")]

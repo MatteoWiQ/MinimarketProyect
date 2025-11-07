@@ -2,18 +2,18 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Minimarket.Core.Dtos;
 using Minimarket.Core.Interface;
+using Minimarket.Core.Interfaces;
 using Minimarket.Core.Services;
 using Minimarket.Core.Validator;
 using Minimarket.Infraestructure.Dtos;
 using Minimarket.Infraestructure.Filters;
 using Minimarket.Infraestructure.Mappings;
-
+using Minimarket.Infraestructure.Repositories;
 using Minimarket.Infraestructure.Validations;
 using Minimarket.Infrastructure.Data.Context;
-using Minimarket.Infrastructure.Validations;
-using Minimarket.Core.Interfaces;
+using Minimarket.Infrastructure.Filters;
 using Minimarket.Infrastructure.Repositories;
-using Minimarket.Infraestructure.Repositories;
+using Minimarket.Infrastructure.Validations;
 
 internal class Program
 {
@@ -47,7 +47,19 @@ internal class Program
 
         builder.Services.AddScoped<IValidatorService, ValidationService>();
         builder.Services.AddScoped<ValidationFilter>();
-        
+
+        builder.Services.AddControllers(options =>
+        {
+            options.Filters.Add<GlobalExceptionFilter>();
+        }).AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        }).ConfigureApiBehaviorOptions(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
+
+
         builder.Services.AddControllers(options =>
         {
             options.Filters.Add<ValidationFilter>();
@@ -57,6 +69,7 @@ internal class Program
         builder.Services.AddValidatorsFromAssemblyContaining<SaleDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<ProductInSaleDtoValidator>();
         // Add services to the container.
+
         builder.Services.AddDbContext<MinimarketContext>(options =>
     options.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=True;TrustServerCertificate=True;"));
 

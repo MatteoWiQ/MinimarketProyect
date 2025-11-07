@@ -1,4 +1,5 @@
 ﻿using Minimarket.Core.Data.Entities;
+using Minimarket.Core.Exceptions;
 using Minimarket.Core.Interface;
 using Minimarket.Core.Interfaces;
 
@@ -21,7 +22,12 @@ namespace Minimarket.Core.Services
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _unitOfWork.UserRepository.GetById(id);
+            var user = await _unitOfWork.UserRepository.GetById(id);
+            if (user == null)
+            {
+                throw new BussinesException("El usuario no existe");
+            }
+            return user;
         }
 
         public async Task InsertAsync(User user)
