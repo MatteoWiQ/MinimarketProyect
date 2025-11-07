@@ -11,36 +11,36 @@ namespace Minimarket.Core.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IBaseRepository<Product> _repo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductService(IBaseRepository<Product> repo)
+        public ProductService(IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await _repo.GetAll();
+            return await _unitOfWork.ProductRepository.GetAll();
         }
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            return await _repo.GetById(id);
+            return await _unitOfWork.ProductRepository.GetById(id);
         }
 
         public async Task InsertAsync(Product product)
         {
-            await _repo.Add(product);
+            await _unitOfWork.ProductRepository.Add(product);
         }
 
         public async Task UpdateAsync(Product product)
         {
-            await _repo.Update(product);
+            await _unitOfWork.ProductRepository.Update(product);
         }
 
         public async Task DeleteAsync(int id)
         {
-            await _repo.Delete(id);
+            await _unitOfWork.ProductRepository.Delete(id);
         }
     }
 }

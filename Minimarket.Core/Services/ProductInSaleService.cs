@@ -12,39 +12,35 @@ namespace Minimarket.Core.Services
 {
     public class ProductInSaleService : IProductInSaleService
     {
-        private readonly IProductInSaleRepository _repo;
-        private readonly IBaseRepository<Sale> _saleRepo;
-        private readonly IBaseRepository<Product> _productRepo;
-        public ProductInSaleService(IProductInSaleRepository repo, IBaseRepository<Sale> saleRepo, IBaseRepository<Product> productRepo)
+        private readonly IUnitOfWork _unitOfWork;
+        public ProductInSaleService(IUnitOfWork unitOfWork)
         {
-            _repo = repo;
-            _saleRepo = saleRepo;
-            _productRepo = productRepo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<ProductInSale>> GetAllAsync(int idSale)
         {
-            return await _repo.GetAllBySaleIdAsync(idSale);
+            return await _unitOfWork.ProductInSaleRepository.GetAllBySaleIdAsync(idSale);
         }
         public async Task<bool> CreateAsync(ProductInSale productInSale)
         {
-            var validationResult = await _productRepo.GetById(productInSale.IdProduct);
+            var validationResult = await _unitOfWork.ProductRepository.GetById(productInSale.IdProduct);
             if (validationResult == null)
             {
                 throw new Exception("El producto en la venta no existe.");
             }
 
-            var sale = await _saleRepo.GetById(productInSale.IdSale);
+            var sale = await _unitOfWork.SaleRepository.GetById(productInSale.IdSale);
             if (sale == null)
             {
                 throw new Exception("La venta no existe.");
             }
-            await _repo.AddAsync(productInSale);
+            await _unitOfWork.ProductInSaleRepository.AddAsync(productInSale);
             return true;
         }
         public async Task<bool> UpdateAsync(ProductInSale productInSale)
         {
-            var validationResult = await _productRepo.GetById(productInSale.IdProduct);
+            var validationResult = await _unitOfWork.ProductRepository.GetById(productInSale.IdProduct);
             if (validationResult == null)
             {
                 throw new Exception("El producto en la venta no existe.");
@@ -52,17 +48,17 @@ namespace Minimarket.Core.Services
             if (validationResult == null) {
                 throw new Exception("El producto en la venta no existe.");
             }
-            var existingProductInSale = await _repo.GetByIdAsync(productInSale.IdProduct);
+            var existingProductInSale = await _unitOfWork.ProductInSaleRepository.GetByIdAsync(productInSale.IdProduct);
             if (existingProductInSale == null)
             {
                 throw new Exception("El producto en la venta no existe.");
             }
-            await _repo.UpdateAsync(productInSale);
+            await _unitOfWork.ProductInSaleRepository.UpdateAsync(productInSale);
             return true;
         }
         public async Task<bool> DeleteAsync(int IdSale, int IdProduct)
         {
-            var productInSale = await _repo.GetAllBySaleIdAsync(IdSale);
+            var productInSale = await _unitOfWork.ProductInSaleRepository.GetAllBySaleIdAsync(IdSale);
             if (productInSale == null)
             {
                 throw new Exception("El IdSale no coincide con el producto en la venta.");
@@ -75,7 +71,7 @@ namespace Minimarket.Core.Services
                 throw new Exception("El producto no se encuentra en la venta.");
             }
 
-            await _repo.DeleteAsync(product);
+            await _unitOfWork.ProductInSaleRepository.DeleteAsync(product);
             return true;
         }
 

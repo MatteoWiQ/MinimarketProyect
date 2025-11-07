@@ -13,6 +13,7 @@ using Minimarket.Infrastructure.Data.Context;
 using Minimarket.Infrastructure.Validations;
 using Minimarket.Core.Interfaces;
 using Minimarket.Infrastructure.Repositories;
+using Minimarket.Infraestructure.Repositories;
 
 internal class Program
 {
@@ -31,16 +32,17 @@ internal class Program
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddScoped<ISaleService, SaleService>();
         builder.Services.AddScoped<IProductInSaleService, ProductInSaleService>();
-        //builder.Services.AddTransient<IPostRepository, PostRepository>();
-        //builder.Services.AddTransient<IUserRepository, UserRepository>();
+        
+        builder.Services.AddTransient<IUserRepository, UserRepository>();
 
         //builder.Services.AddTransient<IUserRepository, UserRepository>();
         //builder.Services.AddTransient<IProductRepository, ProductRepository>();
         //builder.Services.AddTransient<ISaleRepository, SaleRepository>();
-        builder.Services.AddTransient<IProductInSaleRepository, ProductInSaleRepository>();
+        //builder.Services.AddTransient<IProductInSaleRepository, ProductInSaleRepository>();
 
         // IBaseRepository
         builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 
         builder.Services.AddScoped<IValidatorService, ValidationService>();
@@ -66,8 +68,7 @@ internal class Program
 
 
 
-        app.MapControllers();
-        app.Run();
+        
 
 
         // Configure the HTTP request pipeline.

@@ -7,36 +7,36 @@ namespace Minimarket.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly IBaseRepository<User> _repo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService( IBaseRepository<User> repo)
+        public UserService( IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _repo.GetAll();
+            return await _unitOfWork.UserRepository.GetAll();
         }
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _repo.GetById(id);
+            return await _unitOfWork.UserRepository.GetById(id);
         }
 
         public async Task InsertAsync(User user)
         {
-            await _repo.Add(user);
+            await _unitOfWork.UserRepository.Add(user);
         }
 
         public async Task UpdateAsync(User user)
         {
-            await _repo.Update(user);
+            await _unitOfWork.UserRepository.Update(user);
         }
 
         public async Task DeleteAsync(int id)
         {
-            await _repo.Delete(id);
+            await _unitOfWork.UserRepository.Delete(id);
         }
 
     }

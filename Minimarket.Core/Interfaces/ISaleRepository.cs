@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Minimarket.Core.Interfaces
 {
-    public interface ISaleRepository
+    public interface ISaleRepository : IBaseRepository<Sale>
     {
-        Task<IEnumerable<Sale>> GetAllAsync();
-        Task<Sale> GetByIdAsync(int id);
-        Task AddAsync(Sale sale);
-        Task UpdateAsync(Sale sale);
-        Task DeleteAsync(Sale sale);
+
     }
 }
