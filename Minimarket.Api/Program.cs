@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Minimarket.Core.Dtos;
-using Minimarket.Infraestructure.Repositories;
 using Minimarket.Core.Interface;
 using Minimarket.Core.Services;
 using Minimarket.Core.Validator;
@@ -32,11 +31,17 @@ internal class Program
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddScoped<ISaleService, SaleService>();
         builder.Services.AddScoped<IProductInSaleService, ProductInSaleService>();
+        //builder.Services.AddTransient<IPostRepository, PostRepository>();
+        //builder.Services.AddTransient<IUserRepository, UserRepository>();
 
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IProductRepository, ProductRepository>();
-        builder.Services.AddScoped<ISaleRepository, SaleRepository>();
-        builder.Services.AddScoped<IProductInSaleRepository, ProductInSaleRepository>();
+        //builder.Services.AddTransient<IUserRepository, UserRepository>();
+        //builder.Services.AddTransient<IProductRepository, ProductRepository>();
+        //builder.Services.AddTransient<ISaleRepository, SaleRepository>();
+        builder.Services.AddTransient<IProductInSaleRepository, ProductInSaleRepository>();
+
+        // IBaseRepository
+        builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
 
         builder.Services.AddScoped<IValidatorService, ValidationService>();
         builder.Services.AddScoped<ValidationFilter>();

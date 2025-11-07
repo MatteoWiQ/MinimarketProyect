@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Minimarket.Core.Entities;
 
 namespace Minimarket.Core.Data.Entities;
 
 [Table("Product")]
 [Index("Stock", Name = "IX_Product_Stock")]
-public partial class Product
+public partial class Product : BaseEntity
 {
-    [Key]
-    public int Id { get; set; }
+    //[Key]
+    //public int Id { get; set; }
 
     [StringLength(200)]
     public string Name { get; set; } = null!;

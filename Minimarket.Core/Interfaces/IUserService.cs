@@ -9,6 +9,6 @@ namespace Minimarket.Core.Interface
         Task<User> GetByIdAsync(int id);
         Task InsertAsync(User user);
         Task UpdateAsync(User user);
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

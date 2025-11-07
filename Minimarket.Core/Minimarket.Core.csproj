@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\IProductRepository.cs" />
+    <Compile Remove="Interfaces\ISaleRepository.cs" />
+    <Compile Remove="Interfaces\IUserRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="CustomEntities\" />
   </ItemGroup>
 

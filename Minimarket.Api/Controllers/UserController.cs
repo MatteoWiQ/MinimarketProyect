@@ -51,7 +51,7 @@ namespace Minimarket.Api.Controllers
             try
             {
                 var validationResult = await _validatorService.ValidateAsync(userDto);
-
+                        
                 if (!validationResult.IsValid)
                 {
                     return BadRequest(new { Errors = validationResult.Errors });

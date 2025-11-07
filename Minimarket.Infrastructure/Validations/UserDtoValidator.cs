@@ -32,7 +32,7 @@ namespace Minimarket.Core.Validator
                 ;
             RuleFor(x => x.Telephone).MaximumLength(50).When(x => !string.IsNullOrWhiteSpace(x.Telephone))
                 .WithMessage("El teléfono no puede tener más de 50 caracteres")
-                ;
+                ;   
 
             // Validar dateOfBirth
             RuleFor(x => x.DateOfBirth)

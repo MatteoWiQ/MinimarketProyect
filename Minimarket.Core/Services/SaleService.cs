@@ -11,35 +11,34 @@ namespace Minimarket.Core.Services
 {
     public class SaleService : ISaleService
     {
-        private readonly ISaleRepository _repo;
-        private readonly IUserRepository _customerRepo;
-        public SaleService(ISaleRepository repo , IUserRepository customerRepo)
+        private readonly IBaseRepository<Sale> _repo;
+        private readonly IBaseRepository<User> _customerRepo;
+        public SaleService(IBaseRepository<Sale> repo , IBaseRepository<User> customerRepo)
         {
             _repo = repo;
             _customerRepo = customerRepo;
         }
         public async Task<IEnumerable<Sale>> GetAllAsync()
         {
-            return await _repo.GetAllAsync();
+            return await _repo.GetAll();
         }
         public async Task<Sale> GetByIdAsync(int id)
         {
-            return await _repo.GetByIdAsync(id);
+            return await _repo.GetById(id);
         }
         public async Task InsertAsync(Sale sale)
         {
-            // Verificar si el id del customer existe
-            var customer = await _customerRepo.GetByIdAsync((int)sale.CustomerId);
+            var customer = await _customerRepo.GetById(sale.Id);
             if (customer == null)
             {
                 throw new Exception("El cliente no existe.");
             }
             
-            await _repo.AddAsync(sale);
+            await _repo.Add(sale);
         }
         public async Task UpdateAsync(Sale sale)
         {
-            await _repo.UpdateAsync(sale);
+            await _repo.Update(sale);
         }
         
     }

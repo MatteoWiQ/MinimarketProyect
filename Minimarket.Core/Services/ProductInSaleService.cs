@@ -13,9 +13,9 @@ namespace Minimarket.Core.Services
     public class ProductInSaleService : IProductInSaleService
     {
         private readonly IProductInSaleRepository _repo;
-        private readonly ISaleRepository _saleRepo;
-        private readonly IProductRepository _productRepo;
-        public ProductInSaleService(IProductInSaleRepository repo, ISaleRepository saleRepo, IProductRepository productRepo)
+        private readonly IBaseRepository<Sale> _saleRepo;
+        private readonly IBaseRepository<Product> _productRepo;
+        public ProductInSaleService(IProductInSaleRepository repo, IBaseRepository<Sale> saleRepo, IBaseRepository<Product> productRepo)
         {
             _repo = repo;
             _saleRepo = saleRepo;
@@ -24,19 +24,17 @@ namespace Minimarket.Core.Services
 
         public async Task<IEnumerable<ProductInSale>> GetAllAsync(int idSale)
         {
-
-
             return await _repo.GetAllBySaleIdAsync(idSale);
         }
         public async Task<bool> CreateAsync(ProductInSale productInSale)
         {
-            var validationResult = await _productRepo.GetByIdAsync(productInSale.IdProduct);
+            var validationResult = await _productRepo.GetById(productInSale.IdProduct);
             if (validationResult == null)
             {
                 throw new Exception("El producto en la venta no existe.");
             }
 
-            var sale = await _saleRepo.GetByIdAsync(productInSale.IdSale);
+            var sale = await _saleRepo.GetById(productInSale.IdSale);
             if (sale == null)
             {
                 throw new Exception("La venta no existe.");
@@ -46,7 +44,7 @@ namespace Minimarket.Core.Services
         }
         public async Task<bool> UpdateAsync(ProductInSale productInSale)
         {
-            var validationResult = await _productRepo.GetByIdAsync(productInSale.IdProduct);
+            var validationResult = await _productRepo.GetById(productInSale.IdProduct);
             if (validationResult == null)
             {
                 throw new Exception("El producto en la venta no existe.");

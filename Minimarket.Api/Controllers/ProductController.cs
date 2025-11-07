@@ -87,7 +87,7 @@ namespace Minimarket.Api.Controllers
         [HttpDelete("dto/mapper/{id}")]
         public async Task<IActionResult> deleteProductDtoMapper(int id)
         {
-            var deleted = await _productService.DeleteAsync(id);
+            await _productService.DeleteAsync(id);
             return NoContent();
         }
     }

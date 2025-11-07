@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Minimarket.Core.Entities;
 
 namespace Minimarket.Core.Data.Entities;
 
 [Table("User")]
-public partial class User
+public partial class User : BaseEntity
 {
-    [Key]
+    //[Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    //public int Id { get; set; }
 
     [StringLength(50)]
     public string UserType { get; set; } = null!;
