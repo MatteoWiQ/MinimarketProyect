@@ -16,6 +16,7 @@ using System.Net;
 
 namespace Minimarket.Api.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -29,6 +30,25 @@ namespace Minimarket.Api.Controllers
             _mapper = mapper;
             _validatorService = validatorService;
         }
+
+
+        /// <summary>
+        /// Recupera una lista paginada de productos como objetos de transferencia de datos (DTO) utilizando AutoMapper.
+        /// </summary>
+        /// <remarks>
+        /// Este metodo se utiliza para obtener una lista de productos en formato DTO, lo que facilita la transferencia de datos entre el cliente y el servidor.
+        /// </remarks>
+        /// <param name="ProductQueryFilter">
+        /// Los filtros se aplican a la consulta para limitar los resultados devueltos.
+        /// </param>
+        /// <returns>Retorna coleccion o liata de productos en formato DTO.
+        /// </returns>
+        /// <response code="200">Operacion exitosa.</response>
+        /// <response code="400">Solicitud incorrecta.</response>
+        /// [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<PostDto>>))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [HttpGet("dto/mapper")]
         public async Task<IActionResult> getProductsDtoMapper([FromQuery] ProductQueryFilter filter)
         {
