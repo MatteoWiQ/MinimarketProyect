@@ -1,4 +1,4 @@
-﻿        using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Minimarket.Infrastructure.Queries
 {
+    /// <summary>
+    /// Consultas SQL crudas usadas por los repositorios / servicios para reports rápidos.
+    /// </summary>
     public static class ProductQueries
     {
-        // La cantidad de productos vendidos ordenados por mayor cantidad vendida
+        /// <summary>
+        /// La cantidad de productos vendidos ordenados por mayor cantidad vendida.
+        /// </summary>
         public static readonly string GetProductsOrderByQuantitySold = @"
                     SELECT 
                         p.Id, 
@@ -20,7 +25,10 @@ namespace Minimarket.Infrastructure.Queries
                     GROUP BY p.Id, p.[Name], p.ProductBrand
                     ORDER BY TotalQuantitySold DESC;
             ";
-        // Producto más caro del supermercado
+
+        /// <summary>
+        /// Producto más caro del supermercado.
+        /// </summary>
         public static string MostExpensiveProduct = @"
                             SELECT TOP (1)
                                 p.Id,
@@ -32,7 +40,10 @@ namespace Minimarket.Infrastructure.Queries
                             FROM dbo.Product p
                             ORDER BY p.Price DESC
                             ";
-        // Productos que nunca se vendieron
+
+        /// <summary>
+        /// Productos que nunca se vendieron.
+        /// </summary>
         public static string ProductsThatNeverSold = @"
                             SELECT
                                 p.Id,

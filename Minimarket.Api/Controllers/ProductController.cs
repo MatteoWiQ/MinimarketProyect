@@ -1,4 +1,4 @@
-﻿    using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minimarket.Api.Responses;
@@ -31,26 +31,23 @@ namespace Minimarket.Api.Controllers
             _validatorService = validatorService;
         }
 
-
         /// <summary>
-        /// Recupera una lista paginada de productos como objetos de transferencia de datos (DTO) utilizando AutoMapper.
+        /// Recupera una lista paginada de productos (DTO) usando AutoMapper.
         /// </summary>
         /// <remarks>
-        /// Este metodo se utiliza para obtener una lista de productos en formato DTO, lo que facilita la transferencia de datos entre el cliente y el servidor.
+        /// Aplicar filtros de consulta para paginar, ordenar o filtrar por campos. 
+        /// Devuelve un objeto ApiResponse con la lista y metadatos de paginación.
         /// </remarks>
-        /// <param name="ProductQueryFilter">
-        /// Los filtros se aplican a la consulta para limitar los resultados devueltos.
-        /// </param>
-        /// <returns>Retorna coleccion o liata de productos en formato DTO.
-        /// </returns>
-        /// <response code="200">Operacion exitosa.</response>
-        /// <response code="400">Solicitud incorrecta.</response>
-        /// [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<PostDto>>))]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        /// <param name="filter">Filtros de consulta (page, pageSize, name, brand, etc.).</param>
+        /// <returns>ApiResponse con IEnumerable&lt;ProductDto&gt; y paginación.</returns>
+        /// <response code="200">Operación exitosa, devuelve lista paginada.</response>
+        /// <response code="400">Solicitud inválida o error en la entrada.</response>
+        /// <response code="500">Error interno del servidor.</response>
+        [HttpGet("dto/mapper")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<ProductDto>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        [HttpGet("dto/mapper")]
-        public async Task<IActionResult> getProductsDtoMapper([FromQuery] ProductQueryFilter filter)
+        public async Task<IActionResult> GetProductsDtoMapper([FromQuery] ProductQueryFilter filter)
         {
             try
             {
@@ -83,8 +80,18 @@ namespace Minimarket.Api.Controllers
                 return StatusCode(400, responsePost);
             }
         }
+
+        /// <summary>
+        /// Recupera un producto por su Id (DTO).
+        /// </summary>
+        /// <param name="id">Identificador del producto.</param>
+        /// <returns>ApiResponse con ProductDto.</returns>
+        /// <response code="200">Operación exitosa.</response>
+        /// <response code="404">Producto no encontrado.</response>
         [HttpGet("dto/mapper/{id}")]
-        public async Task<IActionResult> getProductByIdDtoMapper(int id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<ProductDto>))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetProductByIdDtoMapper(int id)
         {
             try
             {
@@ -99,8 +106,20 @@ namespace Minimarket.Api.Controllers
                 return StatusCode(ex.StatusCode, ex);
             }
         }
+
+        /// <summary>
+        /// Inserta un nuevo producto (usando DTO).
+        /// </summary>
+        /// <param name="productDto">Objeto ProductDto con los datos del producto.</param>
+        /// <returns>ApiResponse con el ProductDto insertado (Id ya asignado).</returns>
+        /// <response code="200">Inserción exitosa.</response>
+        /// <response code="400">Validación fallida.</response>
+        /// <response code="409">Conflicto (ej. producto ya existe) si se lanza BussinesException.</response>
         [HttpPost("dto/mapper")]
-        public async Task<IActionResult> insertProductDtoMapper(ProductDto productDto)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<ProductDto>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
+        public async Task<IActionResult> InsertProductDtoMapper(ProductDto productDto)
         {
             try
             {
@@ -124,19 +143,30 @@ namespace Minimarket.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza un producto por Id (usando DTO).
+        /// </summary>
+        /// <param name="id">Id del producto a actualizar.</param>
+        /// <param name="productDto">DTO con los datos a actualizar (debe contener el mismo Id).</param>
+        /// <returns>ApiResponse con el producto actualizado.</returns>
+        /// <response code="200">Actualización exitosa.</response>
+        /// <response code="400">Id no coincide o solicitud inválida.</response>
+        /// <response code="404">Producto no encontrado.</response>
         [HttpPut("dto/mapper/{id}")]
-        public async Task<IActionResult> updateProductDtoMapper(int id, ProductDto productDto)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<Product>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> UpdateProductDtoMapper(int id, ProductDto productDto)
         {
             try
             {
-
                 if (id != productDto.Id)
                     throw new BussinesException("El ID del producto no coincide", (int)HttpStatusCode.BadRequest);
                 else
                 {
                     var product = await _productService.GetByIdAsync(id);
                     if (product == null)
-                        throw new BussinesException("Usuario no encontrado", (int)HttpStatusCode.NotFound);
+                        throw new BussinesException("Producto no encontrado", (int)HttpStatusCode.NotFound);
                     _mapper.Map(productDto, product);
                     await _productService.UpdateAsync(product);
 
@@ -149,12 +179,20 @@ namespace Minimarket.Api.Controllers
                 return StatusCode(ex.StatusCode, ex);
             }
         }
+
+        /// <summary>
+        /// Elimina un producto por Id.
+        /// </summary>
+        /// <param name="id">Id del producto a eliminar.</param>
+        /// <response code="204">Eliminación exitosa (No Content).</response>
+        /// <response code="404">Producto no encontrado.</response>
         [HttpDelete("dto/mapper/{id}")]
-        public async Task<IActionResult> deleteProductDtoMapper(int id)
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> DeleteProductDtoMapper(int id)
         {
             try
             {
-
                 await _productService.DeleteAsync(id);
                 return NoContent();
             }
@@ -165,12 +203,20 @@ namespace Minimarket.Api.Controllers
         }
 
         #region Sql Queries
+
+        /// <summary>
+        /// Recupera productos ordenados por cantidad vendida (SQL query).
+        /// </summary>
+        /// <param name="filter">Filtros de paginación y búsqueda.</param>
+        /// <returns>ApiResponse con IEnumerable&lt;GetProductsOrderByQuantitySoldResponse&gt;.</returns>
+        /// <response code="200">Operación exitosa.</response>
         [HttpGet("dto/mapper/products-order-by-quantity-sold")]
-        public async Task<IActionResult> getProductsOrderByQuantitySoldDtoMapper([FromQuery] ProductSoldQueryPaginationResponse filter)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<GetProductsOrderByQuantitySoldResponse>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetProductsOrderByQuantitySoldDtoMapper([FromQuery] ProductSoldQueryPaginationResponse filter)
         {
             try
             {
-
                 var products = await _productService.GetProductsOrderByQuantitySoldAsync(filter);
 
                 var productsDto = _mapper.Map<IEnumerable<GetProductsOrderByQuantitySoldResponse>>(products.Pagination);
@@ -198,13 +244,19 @@ namespace Minimarket.Api.Controllers
                     Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
                 };
                 return StatusCode(400, responsePost);
-
             }
-
         }
 
+        /// <summary>
+        /// Recupera el producto más caro.
+        /// </summary>
+        /// <param name="filter">Filtros opcionales.</param>
+        /// <returns>ApiResponse con ProductQueriesResponse.</returns>
+        /// <response code="200">Operacion exitosa.</response>
         [HttpGet("dto/mapper/most-expensive-product")]
-        public async Task<IActionResult> getMostExpensiveProductDtoMapper([FromQuery] ProductQueryFilter filter)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<ProductQueriesResponse>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetMostExpensiveProductDtoMapper([FromQuery] ProductQueryFilter filter)
         {
             try
             {
@@ -224,9 +276,16 @@ namespace Minimarket.Api.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Recupera los productos que nunca se vendieron.
+        /// </summary>
+        /// <param name="filter">Filtros de consulta/paginación.</param>
+        /// <returns>ApiResponse con IEnumerable&lt;ProductQueriesResponse&gt;.</returns>
+        /// <response code="200">Operacion exitosa.</response>
         [HttpGet("dto/mapper/products-that-never-sold")]
-        public async Task<IActionResult> getProductsThatNeverSoldDtoMapper([FromQuery] ProductQueryFilter filter)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<ProductQueriesResponse>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetProductsThatNeverSoldDtoMapper([FromQuery] ProductQueryFilter filter)
         {
             try
             {

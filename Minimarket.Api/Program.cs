@@ -83,6 +83,7 @@ internal class Program
 
         #region Swagger Config
         builder.Services.AddEndpointsApiExplorer();
+
         builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new()
@@ -98,7 +99,8 @@ internal class Program
             });
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+            if(File.Exists(xmlPath))
+                options.IncludeXmlComments(xmlPath);
             options.EnableAnnotations();
 ;
 
