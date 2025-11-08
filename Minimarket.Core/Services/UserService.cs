@@ -51,7 +51,7 @@ namespace Minimarket.Core.Services
                 {
                     Messages = new Message[] { new() { Type = "Warning", Description = "No fue posible recuperar la cantidad de registros" } },
                     Pagination = pagedUsers,
-                    StatusCode = HttpStatusCode.OK
+                    StatusCode = HttpStatusCode.NotFound
                 };
             }
         }
@@ -70,7 +70,25 @@ namespace Minimarket.Core.Services
 
         public async Task InsertAsync(User user)
         {
+            // verificar que el usuario no exista
+            var existingUser = await _unitOfWork.UserRepository.GetById(user.Id);
+            if (existingUser != null)
+            {
+                
+                throw new BussinesException("El usuario ya existe.", (int)HttpStatusCode.Conflict);
+            }
             await _unitOfWork.UserRepository.Add(user);
+            if(user.DateOfBirth != null)
+            {
+                var age = DateTime.Now.Year - user.DateOfBirth.Value.Year;
+                if (age < 18)
+                {
+                    throw new BussinesException("El usuario debe ser mayor de edad.", (int)HttpStatusCode.BadRequest);
+                }
+            }
+
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(User user)

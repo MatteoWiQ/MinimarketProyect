@@ -55,6 +55,8 @@ namespace Minimarket.Api.Controllers
                 };
                 var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
                 {
+
+                    //statusCode = users.StatusCode,
                     Pagination = pagination,
                     Messages = users.Messages
                 };
@@ -99,6 +101,7 @@ namespace Minimarket.Api.Controllers
                         
                 if (!validationResult.IsValid)
                 {
+                    
                     return BadRequest(new { Errors = validationResult.Errors });
                 }
 
@@ -111,7 +114,8 @@ namespace Minimarket.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                // retornar la excepcion controlada con el mensaje y su status code
+                //
 
             }
         }
