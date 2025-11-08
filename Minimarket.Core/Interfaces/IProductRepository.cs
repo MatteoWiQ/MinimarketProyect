@@ -1,4 +1,5 @@
-﻿using Minimarket.Core.Data.Entities;
+﻿using Minimarket.Core.CustomEntities;
+using Minimarket.Core.Data.Entities;
 using Minimarket.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Minimarket.Core.Interface
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-
+        Task<IEnumerable<GetProductsOrderByQuantitySoldResponse>> GetProductsOrderByQuantitySoldAsync();    
+        Task<ProductQueriesResponse> GetMostExpensiveProductAsync();
+        Task<IEnumerable<ProductQueriesResponse>> GetProductsThatNeverSold();
     }
 }

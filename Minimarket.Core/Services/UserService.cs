@@ -4,6 +4,7 @@ using Minimarket.Core.Exceptions;
 using Minimarket.Core.Interface;
 using Minimarket.Core.Interfaces;
 using Minimarket.Core.QueryFilters;
+
 using System.Net;
 using System.Security.Cryptography;
 
@@ -63,7 +64,7 @@ namespace Minimarket.Core.Services
             var user = await _unitOfWork.UserRepository.GetById(id);
             if (user == null)
             {
-                throw new BussinesException("El usuario no existe.");
+                throw new BussinesException("El usuario no existe.", 404);
             }
             return user;
         }
@@ -74,10 +75,10 @@ namespace Minimarket.Core.Services
             var existingUser = await _unitOfWork.UserRepository.GetById(user.Id);
             if (existingUser != null)
             {
-                
-                throw new BussinesException("El usuario ya existe.", (int)HttpStatusCode.Conflict);
+                throw new BussinesException("El usuario ya existe.", (int)HttpStatusCode.NotFound);
             }
             await _unitOfWork.UserRepository.Add(user);
+            // verificar que el usuario no sea menor de edad (18 años)
             if(user.DateOfBirth != null)
             {
                 var age = DateTime.Now.Year - user.DateOfBirth.Value.Year;
@@ -93,23 +94,85 @@ namespace Minimarket.Core.Services
 
         public async Task UpdateAsync(User user)
         {
+            
             await _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            // Verificar que el usuario exista antes de eliminar
             var user = await _unitOfWork.UserRepository.GetById(id);
             if (user == null)
             {
-                
+                throw new BussinesException("El usuario no existe.", 404);
             }
             await _unitOfWork.UserRepository.Delete(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<UserResponse>> GetAllUsers()
+        public async Task<UserWithMostSalesResponse> GetUserWithMostSales()
         {
-            return await _unitOfWork.UserRepository.getAllUsers();
+            var userWithMostSales = _unitOfWork.UserRepository.GetUserWithMostSales();
+            return await userWithMostSales;
+        }
+
+        public Task<ResponseData> GetAllAgeUsers(AgeUsersPaginationResponse filters)
+        {
+            var users =  _unitOfWork.UserRepository.GetAllAgeUsers();  
+
+            if (filters.Age != null)
+            {
+                users = Task.FromResult(users.Result.Where(x => x.Age == filters.Age));
+            }
+            if(filters.UserType != null)
+            {
+                users = Task.FromResult(users.Result.Where(x => x.UserType.ToLower().Contains(filters.UserType.ToLower())));
+            }
+            var pagedUsers = PagedList<Object>.Create(users.Result, filters.PageNumber, filters.PageSize);
+            if (pagedUsers.Any())
+            {
+                return Task.FromResult(new ResponseData
+                {
+                    Messages = new Message[] { new() { Type = "Information", Description = "Registros de usuarios recuperados correctamente" } },
+                    Pagination = pagedUsers,
+                    StatusCode = System.Net.HttpStatusCode.OK
+                });
+            }
+            return Task.FromResult(new ResponseData()
+            {
+                Messages = new Message[] { new() { Type = "Warning", Description = "No fue posible recuperar la cantidad de registros" } },
+                Pagination = pagedUsers,
+                StatusCode = System.Net.HttpStatusCode.NotFound
+            });
+        }
+
+        public Task<ResponseData> GetSummarizeTypeOfUsers(SummarizeUserTypePagination filters)
+        {
+            var users = _unitOfWork.UserRepository.GetSummarizeTypeOfUsers();
+            if(filters.UserType != null)
+            {
+                users = Task.FromResult(users.Result.Where(x => x.UserType.ToLower().Contains(filters.UserType.ToLower())));
+            }
+            if(filters.UsersCount != null)
+            {
+                users = Task.FromResult(users.Result.Where(x => x.UsersCount == filters.UsersCount));
+            }
+            var pagedUsers = PagedList<Object>.Create(users.Result, filters.PageNumber, filters.PageSize);
+            if (pagedUsers.Any())
+            {
+                return Task.FromResult(new ResponseData
+                {
+                    Messages = new Message[] { new() { Type = "Information", Description = "Registros de usuarios recuperados correctamente" } },
+                    Pagination = pagedUsers,
+                    StatusCode = System.Net.HttpStatusCode.OK
+                });
+            }
+            return Task.FromResult(new ResponseData()
+            {
+                Messages = new Message[] { new() { Type = "Warning", Description = "No fue posible recuperar la cantidad de registros" } },
+                Pagination = pagedUsers,
+                StatusCode = System.Net.HttpStatusCode.NotFound
+            });
         }
     }
 }

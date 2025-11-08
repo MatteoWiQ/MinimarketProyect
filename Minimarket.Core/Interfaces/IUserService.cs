@@ -12,6 +12,8 @@ namespace Minimarket.Core.Interface
         Task InsertAsync(User user);
         Task UpdateAsync(User user);
         Task DeleteAsync(int id);
-        Task<IEnumerable<UserResponse>> GetAllUsers();
+        Task<UserWithMostSalesResponse> GetUserWithMostSales();
+        Task<ResponseData> GetAllAgeUsers(AgeUsersPaginationResponse filters);
+        Task<ResponseData> GetSummarizeTypeOfUsers(SummarizeUserTypePagination filters);
     }
 }

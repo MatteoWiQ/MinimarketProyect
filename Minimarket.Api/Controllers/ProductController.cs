@@ -2,9 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minimarket.Api.Responses;
+using Minimarket.Core.CustomEntities;
 using Minimarket.Core.Data.Entities;
 using Minimarket.Core.Dtos;
+using Minimarket.Core.Enum;
+using Minimarket.Core.Exceptions;
 using Minimarket.Core.Interface;
+using Minimarket.Core.QueryFilters;
 using Minimarket.Core.Services;
 using Minimarket.Infraestructure.Dtos;
 using Minimarket.Infraestructure.Validations;
@@ -26,20 +30,54 @@ namespace Minimarket.Api.Controllers
             _validatorService = validatorService;
         }
         [HttpGet("dto/mapper")]
-        public async Task<IActionResult> getProductsDtoMapper()
+        public async Task<IActionResult> getProductsDtoMapper([FromQuery] ProductQueryFilter filter)
         {
-            var products = await _productService.GetAllAsync();
-            var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);
-            var response = new ApiResponse<IEnumerable<ProductDto>>(productsDto);
-            return Ok(response);
+            try
+            {
+                var products = await _productService.GetAllAsync(filter);
+
+                var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products.Pagination);
+
+                var pagination = new Pagination
+                {
+                    TotalCount = products.Pagination.TotalCount,
+                    PageSize = products.Pagination.PageSize,
+                    CurrentPage = products.Pagination.CurrentPage,
+                    TotalPages = products.Pagination.TotalPages,
+                    HasNextPage = products.Pagination.HasNextPage,
+                    HasPreviousPage = products.Pagination.HasPreviousPage
+                };
+                var response = new ApiResponse<IEnumerable<ProductDto>>(productsDto)
+                {
+                    Pagination = pagination,
+                    Messages = products.Messages
+                };
+                return StatusCode((int)products.StatusCode, response);
+            }
+            catch (Exception err)
+            {
+                var responsePost = new ResponseData()
+                {
+                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
+                };
+                return StatusCode(400, responsePost);
+            }
         }
         [HttpGet("dto/mapper/{id}")]
         public async Task<IActionResult> getProductByIdDtoMapper(int id)
         {
-            var product = await _productService.GetByIdAsync(id);
-            var productDto = _mapper.Map<ProductDto>(product);
-            var response = new ApiResponse<ProductDto>(productDto);
-            return Ok(response);
+            try
+            {
+                var product = await _productService.GetByIdAsync(id);
+                var productDto = _mapper.Map<ProductDto>(product);
+                var response = new ApiResponse<ProductDto>(productDto);
+                return Ok(response);
+
+            }
+            catch (BussinesException ex)
+            {
+                return StatusCode(ex.StatusCode, ex);
+            }
         }
         [HttpPost("dto/mapper")]
         public async Task<IActionResult> insertProductDtoMapper(ProductDto productDto)
@@ -60,35 +98,145 @@ namespace Minimarket.Api.Controllers
                 return Ok(response);
 
             }
-            catch (Exception ex)
+            catch (BussinesException ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return StatusCode(ex.StatusCode, ex);
             }
         }
 
         [HttpPut("dto/mapper/{id}")]
         public async Task<IActionResult> updateProductDtoMapper(int id, ProductDto productDto)
         {
-            if (id != productDto.Id)
-                return BadRequest("El ID del producto no coincide");
-            else
+            try
             {
-                var product = await _productService.GetByIdAsync(id);
-                if (product == null)
-                    return NotFound("Usuario no encontrado");
-                _mapper.Map(productDto, product);
-                await _productService.UpdateAsync(product);
 
-                var response = new ApiResponse<Product>(product);
-                return Ok(response);
+                if (id != productDto.Id)
+                    throw new BussinesException("El ID del producto no coincide", (int)HttpStatusCode.BadRequest);
+                else
+                {
+                    var product = await _productService.GetByIdAsync(id);
+                    if (product == null)
+                        throw new BussinesException("Usuario no encontrado", (int)HttpStatusCode.NotFound);
+                    _mapper.Map(productDto, product);
+                    await _productService.UpdateAsync(product);
+
+                    var response = new ApiResponse<Product>(product);
+                    return Ok(response);
+                }
+            }
+            catch (BussinesException ex)
+            {
+                return StatusCode(ex.StatusCode, ex);
             }
         }
-
         [HttpDelete("dto/mapper/{id}")]
         public async Task<IActionResult> deleteProductDtoMapper(int id)
         {
-            await _productService.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+
+                await _productService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (BussinesException ex)
+            {
+                return StatusCode(ex.StatusCode, ex);
+            }
         }
+
+        #region Sql Queries
+        [HttpGet("dto/mapper/products-order-by-quantity-sold")]
+        public async Task<IActionResult> getProductsOrderByQuantitySoldDtoMapper([FromQuery] ProductSoldQueryPaginationResponse filter)
+        {
+            try
+            {
+
+                var products = await _productService.GetProductsOrderByQuantitySoldAsync(filter);
+
+                var productsDto = _mapper.Map<IEnumerable<GetProductsOrderByQuantitySoldResponse>>(products.Pagination);
+                var pagination = new Pagination
+                {
+                    TotalCount = products.Pagination.TotalCount,
+                    PageSize = products.Pagination.PageSize,
+                    CurrentPage = products.Pagination.CurrentPage,
+                    TotalPages = products.Pagination.TotalPages,
+                    HasNextPage = products.Pagination.HasNextPage,
+                    HasPreviousPage = products.Pagination.HasPreviousPage
+                };
+                var response = new ApiResponse<IEnumerable<GetProductsOrderByQuantitySoldResponse>>(productsDto)
+                {
+                    Pagination = pagination,
+                    Messages = products.Messages
+                };
+
+                return StatusCode((int)products.StatusCode, response);
+            }
+            catch (Exception err)
+            {
+                var responsePost = new ResponseData()
+                {
+                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
+                };
+                return StatusCode(400, responsePost);
+
+            }
+
+        }
+
+        [HttpGet("dto/mapper/most-expensive-product")]
+        public async Task<IActionResult> getMostExpensiveProductDtoMapper([FromQuery] ProductQueryFilter filter)
+        {
+            try
+            {
+                var product = await _productService.GetMostExpensiveProductAsync(filter);
+                var productDto = _mapper.Map<ProductQueriesResponse>(product);
+                var response = new ApiResponse<ProductQueriesResponse>(productDto);
+                response.Messages = new Message[] { new() { Type = TypeMessage.information.ToString(), Description = "Producto más caro recuperado correctamente" } };
+                return Ok(response);
+            }
+            catch (Exception err)
+            {
+                var responsePost = new ResponseData()
+                {
+                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
+                };
+                return StatusCode(400, responsePost);
+            }
+        }
+
+
+        [HttpGet("dto/mapper/products-that-never-sold")]
+        public async Task<IActionResult> getProductsThatNeverSoldDtoMapper([FromQuery] ProductQueryFilter filter)
+        {
+            try
+            {
+                var products = await _productService.GetProductsThatNeverSoldAsync(filter);
+                var productsDto = _mapper.Map<IEnumerable<ProductQueriesResponse>>(products.Pagination);
+                var pagination = new Pagination
+                {
+                    TotalCount = products.Pagination.TotalCount,
+                    PageSize = products.Pagination.PageSize,
+                    CurrentPage = products.Pagination.CurrentPage,
+                    TotalPages = products.Pagination.TotalPages,
+                    HasNextPage = products.Pagination.HasNextPage,
+                    HasPreviousPage = products.Pagination.HasPreviousPage
+                };
+                var response = new ApiResponse<IEnumerable<ProductQueriesResponse>>(productsDto)
+                {
+                    Pagination = pagination,
+                    Messages = products.Messages
+                };
+                return StatusCode((int)products.StatusCode, response);
+            }
+            catch (Exception err)
+            {
+                var responsePost = new ResponseData()
+                {
+                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
+                };
+                return StatusCode(400, responsePost);
+            }
+        }
+        #endregion
     }
 }

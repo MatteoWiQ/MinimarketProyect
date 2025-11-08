@@ -1,4 +1,5 @@
-﻿using Minimarket.Core.Data.Entities;
+﻿using Minimarket.Core.CustomEntities;
+using Minimarket.Core.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,8 @@ namespace Minimarket.Core.Interfaces
         Task AddAsync(ProductInSale productInSale);
         Task UpdateAsync(ProductInSale productInSale);
         Task DeleteAsync(ProductInSale productInSale);
+        Task<IEnumerable<GetProductsInSaleDetailsResponse>> GetProductsInSaleDetailsBySaleIdAsync();
+        Task<IEnumerable<ProductQuantityBySaleResponse>> GetProductQuantitiesBySaleIdAsync();
+        Task<ProductWithHighestQuantityInSaleResponse> GetProductWithHighestQuantityInSaleAsync();
     }
 }
