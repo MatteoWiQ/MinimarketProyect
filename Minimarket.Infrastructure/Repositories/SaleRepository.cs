@@ -12,10 +12,12 @@ namespace Minimarket.Infrastructure.Repositories
 {
     public class SaleRepository : BaseRepository<Sale>, ISaleRepository
     {
-        private readonly MinimarketContext _context;
-        public SaleRepository(MinimarketContext context) : base(context)
+        //private readonly MinimarketContext _context;
+        private readonly IDapperContext _dapper;
+        public SaleRepository(MinimarketContext context, IDapperContext dapper) : base(context)
         {
-            _context = context;
+            //_context = context;
+            _dapper = dapper;
         }
     }
 

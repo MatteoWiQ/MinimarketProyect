@@ -1,4 +1,5 @@
-﻿using Minimarket.Core.Data.Entities;
+﻿using Minimarket.Core.CustomEntities;
+using Minimarket.Core.Data.Entities;
 
 
 namespace Minimarket.Core.Interface

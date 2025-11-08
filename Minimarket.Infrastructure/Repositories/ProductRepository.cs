@@ -2,6 +2,7 @@
 using Minimarket.Core.Data.Entities;
 
 using Minimarket.Core.Interface;
+using Minimarket.Core.Interfaces;
 using Minimarket.Infrastructure.Data.Context;
 using Minimarket.Infrastructure.Repositories;
 using System;
@@ -15,10 +16,12 @@ namespace Minimarket.Infraestructure.Repositories
 {
     public class ProductRepository : BaseRepository<Product> ,IProductRepository 
     {
-        private readonly MinimarketContext _context;
-        public ProductRepository(MinimarketContext ctx) : base(ctx)
+        //private readonly MinimarketContext _context;
+        private readonly IDapperContext _dapper;
+        public ProductRepository(MinimarketContext ctx, IDapperContext dapper) : base(ctx)
         {
-            _context = ctx;
+            //_context = ctx;
+            _dapper = dapper;
         }
 
     }

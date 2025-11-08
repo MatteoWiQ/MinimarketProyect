@@ -11,6 +11,12 @@ using Minimarket.Api.Responses;
 using Minimarket.Infraestructure.Validations;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using Minimarket.Infraestructure.Repositories;
+using Minimarket.Core.CustomEntities;
+using Minimarket.Core.QueryFilters;
+using Minimarket.Core.Interfaces;
+using Minimarket.Core.Enum;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Minimarket.Api.Controllers
 {
@@ -27,14 +33,46 @@ namespace Minimarket.Api.Controllers
             _mapper = mapper;
             _validatorService = validatorService;
         }
+
+
         [HttpGet("dto/mapper")]
-        public async Task<IActionResult> getUsersDtoMapper()
+        public async Task<IActionResult> GetUsersDtoMapper([FromQuery]UserQueryFilter filters)
         {
-            var users = await _userService.GetAllAsync();
-            var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
-            var response = new ApiResponse<IEnumerable<UserDto>>(usersDto);
-            return Ok(response);
+            try
+            {
+                var users = await _userService.GetAllUsersAsync(filters);
+
+                var usersDto = _mapper.Map<IEnumerable<UserDto>>(users.Pagination);
+
+                var pagination = new Pagination
+                {
+                    TotalCount = users.Pagination.TotalCount,
+                    PageSize = users.Pagination.PageSize,
+                    CurrentPage = users.Pagination.CurrentPage,
+                    TotalPages = users.Pagination.TotalPages,
+                    HasNextPage = users.Pagination.HasNextPage,
+                    HasPreviousPage = users.Pagination.HasPreviousPage
+                };
+                var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
+                {
+                    Pagination = pagination,
+                    Messages = users.Messages
+                };
+
+                return StatusCode((int)users.StatusCode, response);
+            }
+            catch (Exception err)
+            {
+                var responsePost = new ResponseData()
+                {
+                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
+                };
+                return StatusCode(500, responsePost);
+            }
+
         }
+
+
 
         [HttpGet("dto/mapper/{id}")]
         public async Task<IActionResult> getUserById(int id)
@@ -99,8 +137,16 @@ namespace Minimarket.Api.Controllers
         [HttpDelete("dto/mapper/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            await _userService.DeleteAsync(id);
-            return NoContent();
+            try { 
+                await _userService.DeleteAsync(id);
+                // retornar un mensaje de exito no content
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            
         }
     }
 }

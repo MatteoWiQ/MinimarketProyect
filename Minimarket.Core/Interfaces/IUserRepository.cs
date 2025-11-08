@@ -1,5 +1,7 @@
-﻿using Minimarket.Core.Data.Entities;
+﻿using Minimarket.Core.CustomEntities;
+using Minimarket.Core.Data.Entities;
 using Minimarket.Core.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,6 @@ namespace Minimarket.Core.Interface
         //Task AddAsync(User user);
         //Task UpdateAsync(User user);
         //Task DeleteAsync(User user);
-        
+        Task<IEnumerable<UserResponse>> getAllUsers();
     }
 }

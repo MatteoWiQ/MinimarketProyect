@@ -14,6 +14,7 @@ using Minimarket.Infrastructure.Data.Context;
 using Minimarket.Infrastructure.Filters;
 using Minimarket.Infrastructure.Repositories;
 using Minimarket.Infrastructure.Validations;
+using SocialMedia.Infrastructure.Data;
 
 internal class Program
 {
@@ -34,6 +35,10 @@ internal class Program
         builder.Services.AddScoped<IProductInSaleService, ProductInSaleService>();
         
         builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+
+        builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+        builder.Services.AddScoped<IDapperContext, DapperContext>();
 
         //builder.Services.AddTransient<IUserRepository, UserRepository>();
         //builder.Services.AddTransient<IProductRepository, ProductRepository>();

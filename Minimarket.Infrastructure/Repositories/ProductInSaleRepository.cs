@@ -13,9 +13,11 @@ namespace Minimarket.Infrastructure.Repositories
     public class ProductInSaleRepository : IProductInSaleRepository
     {
         private readonly MinimarketContext _context;
-        public ProductInSaleRepository(MinimarketContext context)
+        private readonly IDapperContext _dapper;
+        public ProductInSaleRepository(MinimarketContext context, IDapperContext dapper) 
         {
             _context = context;
+            _dapper = dapper;
         }
         public async Task<IEnumerable<ProductInSale>> GetAllBySaleIdAsync(int IdSale)
         {
