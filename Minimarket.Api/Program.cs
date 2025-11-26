@@ -19,6 +19,14 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+
+        builder.Configuration.Sources.Clear();
+        builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, 
+                                            reloadOnChange: true);
+
+
         builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 

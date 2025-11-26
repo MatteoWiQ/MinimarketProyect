@@ -21,14 +21,16 @@ namespace Minimarket.Api.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly IValidatorService _validatorService;
-        public ProductController(IProductService productService, IMapper mapper, IValidatorService validatorService)
+        public ProductController(IProductService productService, IMapper mapper, IValidatorService validatorService, IConfiguration configuration)
         {
             _productService = productService;
             _mapper = mapper;
             _validatorService = validatorService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -317,5 +319,16 @@ namespace Minimarket.Api.Controllers
             }
         }
         #endregion
+
+
+        [HttpGet("Test")]
+        public async Task<IActionResult> Test()
+        {
+            var result = new 
+            {
+                connectionSqlServer = _configuration.GetConnectionString("SqlServerConnection") != null,
+            };
+            return Ok(result);
+        }
     }
 }
