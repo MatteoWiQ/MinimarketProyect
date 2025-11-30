@@ -1,5 +1,8 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Minimarket.Core.CustomEntities.Hash;
 using Minimarket.Core.Interface;
 using Minimarket.Core.Interfaces;
 using Minimarket.Core.Services;
@@ -19,6 +22,12 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // Configuar configuracion para diferentes entornos
+        if(builder.Environment.IsDevelopment())
+        {
+            builder.Configuration.AddUserSecrets<Program>();
+        }
 
 
         builder.Configuration.Sources.Clear();
@@ -76,12 +85,32 @@ internal class Program
             options.Filters.Add<ValidationFilter>();
         });
 
+        builder.Services.Configure<PasswordOptions>(builder.Configuration.GetSection("PasswordOptions"));  
 
         builder.Services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<ProductDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<SaleDtoValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<ProductInSaleDtoValidator>();
+
+
         // Add services to the container.
+        builder.Services.AddApiVersioning(options =>
+        {
+
+            options.ReportApiVersions = true;
+            
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+
+
+            // Soportar versionamiento mediante la URL
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new HeaderApiVersionReader("x-api-version"),
+                new QueryStringApiVersionReader("api-version")
+                );
+        });
+
 
         builder.Services.AddDbContext<MinimarketContext>(options =>
     options.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=True;TrustServerCertificate=True;"));

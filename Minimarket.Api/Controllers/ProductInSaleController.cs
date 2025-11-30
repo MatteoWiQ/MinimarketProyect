@@ -13,6 +13,8 @@ namespace Minimarket.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class ProductInSaleController : ControllerBase
     {
         private readonly IProductInSaleService _productInSaleService;

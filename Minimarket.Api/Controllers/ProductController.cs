@@ -17,8 +17,9 @@ using System.Net;
 namespace Minimarket.Api.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class ProductController : ControllerBase
     {
         private readonly IConfiguration _configuration;

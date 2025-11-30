@@ -13,8 +13,9 @@ using Minimarket.Infrastructure.Dtos;
 
 namespace Minimarket.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class SaleController : ControllerBase
     {
         private readonly ISaleService _saleService;

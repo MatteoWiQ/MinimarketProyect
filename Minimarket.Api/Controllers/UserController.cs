@@ -21,8 +21,9 @@ using Minimarket.Core.Exceptions;
 
 namespace Minimarket.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
