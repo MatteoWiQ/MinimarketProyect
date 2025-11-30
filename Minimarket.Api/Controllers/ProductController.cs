@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minimarket.Api.Responses;
@@ -16,6 +17,7 @@ using System.Net;
 
 namespace Minimarket.Api.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [ApiController]
     [ApiVersion("1.0")]

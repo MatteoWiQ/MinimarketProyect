@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -145,6 +146,33 @@ internal class Program
 
         #endregion
 
+        #region Authentication Config
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime =  true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Authentication:Issuer"],
+                ValidAudience = builder.Configuration["Authentication:Audience"],
+                IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                    System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"])
+                    ),
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+        
+
+        #endregion
+
         var app = builder.Build();
 
         // uso del swagger
@@ -162,6 +190,8 @@ internal class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+
+        app.UseAuthentication();
 
         app.MapControllers();
 
