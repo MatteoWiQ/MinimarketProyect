@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Minimarket.Core.Data;
 using Minimarket.Core.Entities;
+using Minimarket.Core.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Minimarket.Api.Controllers
 {
@@ -13,19 +16,34 @@ namespace Minimarket.Api.Controllers
     public class TokenController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public TokenController(IConfiguration configuration)
+        private readonly ISecurityService _securityService;
+        public TokenController(IConfiguration configuration, ISecurityService securityService)
         {
             _configuration = configuration;
+            _securityService = securityService;
         }
         [HttpPost]
-        public IActionResult Authentication(UserLogin userLogin)
+        public async Task<IActionResult> Authentication(UserLogin userLogin)
         {
             //Si es un usuario válido
-            var token = GenerateToken(userLogin);
-            return Ok(new { token });
+            var validation = await IsValidUser(userLogin);
+            if (validation.Item1)
+            {
+                var token = GenerateToken(validation.Item2);
+                return Ok(new { token });
+            }
+
+            return NotFound();
         }
 
-        private string GenerateToken(UserLogin userLogin)
+        private async Task<(bool, Security)> IsValidUser(UserLogin login)
+        {
+            var user = await _securityService.GetLoginByCredentials(login);
+            return (user != null, user);
+        }
+
+
+        private string GenerateToken(Security security)
         {
             //Header
             var symmetricSecurityKey =
@@ -37,9 +55,9 @@ namespace Minimarket.Api.Controllers
             //Claims (Cuerpo)
             var claims = new[]
             {
-            new Claim("Name", "Juan Perez"),
-            new Claim(ClaimTypes.Email, "jperez@ucb.edu.bo"),
-            new Claim(ClaimTypes.Role, "Administrador"),
+            new Claim("Login", security.Login),
+            new Claim("Name", security.Name),
+            new Claim(ClaimTypes.Role, security.Role.ToString()),
         };
 
             //Payload

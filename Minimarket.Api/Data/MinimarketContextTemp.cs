@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Minimarket.Core.Data;
-using Minimarket.Core.Entities;
-using Minimarket.Core.Enum;
 
-namespace Minimarket.Infrastructure.Data;
+namespace Minimarket.Api.Data;
 
 public partial class MinimarketContextTemp : DbContext
 {
@@ -30,6 +27,9 @@ public partial class MinimarketContextTemp : DbContext
         {
             entity.ToTable("Security");
 
+            entity.Property(e => e.Login)
+                .HasMaxLength(200)
+                .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -38,12 +38,7 @@ public partial class MinimarketContextTemp : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Role)
                 .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasConversion(
-                    x => x.ToString(),
-                    x => (RoleType)Enum.Parse(typeof(RoleType), x)
-            );
-
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

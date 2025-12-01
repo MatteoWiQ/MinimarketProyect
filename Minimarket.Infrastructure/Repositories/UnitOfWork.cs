@@ -22,6 +22,7 @@ namespace Minimarket.Infrastructure.Repositories
         private readonly IProductRepository? _productRepository;
         private readonly ISaleRepository? _saleRepository;
         private readonly ProductInSaleRepository? _productSaleRepository;
+        private readonly ISecurityRepository? _securityRepository;
         private IDbContextTransaction? _efTransaction;
         private IDapperContext _dapper;
 
@@ -43,7 +44,8 @@ namespace Minimarket.Infrastructure.Repositories
 
         public IUserRepository UserRepository => 
                 _userRepository ?? new UserRepository(_context, _dapper);
-
+        public ISecurityRepository SecurityRepository => 
+                _securityRepository ?? new SecurityRepository(_context, _dapper);
         public void Dispose()
         {
             if (_context != null) {

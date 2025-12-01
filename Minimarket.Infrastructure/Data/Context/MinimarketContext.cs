@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Minimarket.Core.Data;
 using Minimarket.Core.Data.Entities;
-
+using Minimarket.Core.Entities;
+using Minimarket.Core.Enum;
 namespace Minimarket.Infrastructure.Data.Context;
 
 public partial class MinimarketContext : DbContext
@@ -17,12 +19,10 @@ public partial class MinimarketContext : DbContext
     }
 
     public virtual DbSet<Product> Products { get; set; }
-
     public virtual DbSet<ProductInSale> ProductInSales { get; set; }
-
     public virtual DbSet<Sale> Sales { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Security> Securities { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -71,7 +71,25 @@ public partial class MinimarketContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
         });
+        modelBuilder.Entity<Security>(entity =>
+        {
+            entity.ToTable("Security");
 
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Password)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Role)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasConversion(
+                    x => x.ToString(),
+                    x => (RoleType)Enum.Parse(typeof(RoleType), x)
+            );
+
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 

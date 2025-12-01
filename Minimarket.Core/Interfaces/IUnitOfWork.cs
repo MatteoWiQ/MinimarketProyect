@@ -14,6 +14,7 @@ namespace Minimarket.Core.Interfaces
         IUserRepository UserRepository { get; }
         IProductRepository ProductRepository { get; }
         ISaleRepository SaleRepository { get; }
+        ISecurityRepository SecurityRepository { get; }
         IProductInSaleRepository ProductInSaleRepository { get; }
         // Este repositorio no puede ser generico, tiene 2 IDs en su estructura
         void SaveChanges();

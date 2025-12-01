@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Minimarket.Core.Data;
 using Minimarket.Core.Data.Entities;
 using Minimarket.Core.Dtos;
+using Minimarket.Core.Entities;
 using Minimarket.Infraestructure.Dtos;
 using Minimarket.Infrastructure.Dtos;
 using System.Collections.Generic;
@@ -22,6 +24,8 @@ namespace Minimarket.Infraestructure.Mappings
             CreateMap<Sale, SaleDto>();
             CreateMap<ProductInSale, ProductInSaleDto>();
             CreateMap<ProductInSaleDto, ProductInSale>();
+            CreateMap<Security, SecurityDto>();
+            CreateMap<SecurityDto, Security>();
         }
     }
 }

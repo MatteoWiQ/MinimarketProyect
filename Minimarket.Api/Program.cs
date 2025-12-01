@@ -56,6 +56,7 @@ internal class Program
         builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
         builder.Services.AddScoped<IDapperContext, DapperContext>();
 
+        builder.Services.AddTransient<ISecurityService, SecurityService>();
         //builder.Services.AddTransient<IUserRepository, UserRepository>();
         //builder.Services.AddTransient<IProductRepository, ProductRepository>();
         //builder.Services.AddTransient<ISaleRepository, SaleRepository>();
