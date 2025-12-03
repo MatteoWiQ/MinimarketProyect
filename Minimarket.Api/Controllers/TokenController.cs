@@ -11,69 +11,119 @@ using System.Threading.Tasks;
 
 namespace Minimarket.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
+    [Route("api/[controller]")]
     public class TokenController : ControllerBase
     {
         private readonly IConfiguration _configuration;
         private readonly ISecurityService _securityService;
-        public TokenController(IConfiguration configuration, ISecurityService securityService)
+        private readonly IPasswordService _passwordService;
+
+        public TokenController(IConfiguration configuration, ISecurityService securityService, IPasswordService passwordService)
         {
             _configuration = configuration;
             _securityService = securityService;
+            _passwordService = passwordService;
         }
+
+        /// <summary>
+        /// Genera un token JWT a partir de las credenciales del usuario.
+        /// </summary>
+        /// <remarks>
+        /// Envía un objeto UserLogin con Login y Password para autenticar.
+        /// Si las credenciales son válidas devuelve un token JWT con Claims.
+        /// </remarks>
+        /// <param name="userLogin">Credenciales del usuario.</param>
+        /// <returns>Token JWT.</returns>
+        /// <response code="200">Autenticación exitosa, token generado.</response>
+        /// <response code="404">Credenciales inválidas.</response>
+        /// <response code="500">Error interno del servidor.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Authentication(UserLogin userLogin)
         {
-            //Si es un usuario válido
-            var validation = await IsValidUser(userLogin);
-            if (validation.Item1)
+            try
             {
-                var token = GenerateToken(validation.Item2);
-                return Ok(new { token });
+                var validation = await IsValidUser(userLogin);
+                if (validation.Item1)
+                {
+                    var token = GenerateToken(validation.Item2);
+                    return Ok(new { token });
+                }
+                return NotFound();
             }
-
-            return NotFound();
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
+        /// <summary>
+        /// Verifica si las credenciales del usuario son válidas.
+        /// </summary>
+        /// <param name="login">Credenciales ingresadas.</param>
+        /// <returns>Tupla indicando si es válido y el usuario encontrado.</returns>
         private async Task<(bool, Security)> IsValidUser(UserLogin login)
         {
             var user = await _securityService.GetLoginByCredentials(login);
-            return (user != null, user);
+            var isValid = _passwordService.Check(user.Password, login.Password);
+            return (isValid, user);
         }
 
-
+        /// <summary>
+        /// Genera un token JWT con la información del usuario autenticado.
+        /// </summary>
+        /// <param name="security">Datos del usuario.</param>
+        /// <returns>Token JWT serializado.</returns>
         private string GenerateToken(Security security)
         {
-            //Header
             var symmetricSecurityKey =
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretKey"]));
             var signingCredentials =
                 new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
             var header = new JwtHeader(signingCredentials);
 
-            //Claims (Cuerpo)
             var claims = new[]
             {
-            new Claim("Login", security.Login),
-            new Claim("Name", security.Name),
-            new Claim(ClaimTypes.Role, security.Role.ToString()),
-        };
+                new Claim("Login", security.Login),
+                new Claim("Name", security.Name),
+                new Claim(ClaimTypes.Role, security.Role.ToString()),
+            };
 
-            //Payload
+            var expirationMinutes = Convert.ToDouble(_configuration["Authentication:ExpirationMinutes"]);
+
             var payload = new JwtPayload(
                 issuer: _configuration["Authentication:Issuer"],
                 audience: _configuration["Authentication:Audience"],
                 claims: claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(2)
+                expires: DateTime.UtcNow.AddMinutes(expirationMinutes)
             );
 
-            //Generar el token JWT
             var token = new JwtSecurityToken(header, payload);
 
-            //Serializar el token
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        /// <summary>
+        /// Permite verificar rápidamente las conexiones configuradas (MySQL y SQL Server).
+        /// </summary>
+        /// <returns>Lista con los connection strings activos.</returns>
+        /// <response code="200">Conexiones leídas correctamente.</response>
+        [HttpGet("TestConeccion")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public async Task<IActionResult> TestConexion()
+        {
+            var result = new
+            {
+                ConnectionMySql = _configuration["ConnectionStrings:ConnectionMySql"],
+                ConnectionSqlServer = _configuration["ConnectionStrings:ConnectionSqlServer"]
+            };
+
+            return Ok(result);
         }
     }
 }

@@ -28,13 +28,16 @@ internal class Program
         if(builder.Environment.IsDevelopment())
         {
             builder.Configuration.AddUserSecrets<Program>();
+            Console.WriteLine("User Secrets habilitados para desarrollo");
+
         }
 
 
         builder.Configuration.Sources.Clear();
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                              .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, 
-                                            reloadOnChange: true);
+                                            reloadOnChange: true)
+                             .AddEnvironmentVariables();            //
 
 
         builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -52,7 +55,7 @@ internal class Program
         
         builder.Services.AddTransient<IUserRepository, UserRepository>();
 
-
+        builder.Services.AddSingleton<IPasswordService, PasswordService>();
         builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
         builder.Services.AddScoped<IDapperContext, DapperContext>();
 
@@ -115,7 +118,7 @@ internal class Program
 
 
         builder.Services.AddDbContext<MinimarketContext>(options =>
-    options.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=True;TrustServerCertificate=True;"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionSqlServer")));
 
         builder.Services.AddControllers();
 
@@ -166,13 +169,46 @@ internal class Program
                 IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
                     System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"])
                     ),
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.FromMinutes(5)
             };
+
+
+            #region Debug consola
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = ctx =>
+                {
+                    // Muestra el header Authorization tal cual llega
+                    var header = ctx.Request.Headers["Authorization"].FirstOrDefault();
+                    Console.WriteLine($"OnMessageReceived AuthorizationHeader={header}");
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = ctx =>
+                {
+                    Console.WriteLine($"OnTokenValidated. Claims: {string.Join(", ", ctx.Principal.Claims.Select(c => c.Type + '=' + c.Value))}");
+                    return Task.CompletedTask;
+                },
+                OnAuthenticationFailed = ctx =>
+                {
+                    Console.WriteLine($"OnAuthenticationFailed: {ctx.Exception?.Message}");
+                    return Task.CompletedTask;
+                },
+                OnChallenge = context =>
+                {
+                    // Esto se ejecuta justo antes de devolver 401
+                    Console.WriteLine($"OnChallenge: Error={context.Error}, Desc={context.ErrorDescription}");
+                    return Task.CompletedTask;
+                }
+            };
+
+            #endregion
         });
 
-        
+
 
         #endregion
+
+        builder.Configuration.AddEnvironmentVariables();
 
         var app = builder.Build();
 
@@ -187,12 +223,14 @@ internal class Program
             });
         }
         // Configure the HTTP request pipeline.
-
         app.UseHttpsRedirection();
+
+        app.UseRouting();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
-        app.UseAuthentication();
 
         app.MapControllers();
 

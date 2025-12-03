@@ -1,26 +1,21 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.Extensions.Hosting;
+using Minimarket.Api.Responses;
+using Minimarket.Core.CustomEntities;
 using Minimarket.Core.Data.Entities;
 using Minimarket.Core.Dtos;
-using Microsoft.EntityFrameworkCore;
-using Minimarket.Core.Interface;
-using Minimarket.Core.Validator;
-using Minimarket.Api.Responses;
-using Minimarket.Infraestructure.Validations;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using Minimarket.Infraestructure.Repositories;
-using Minimarket.Core.CustomEntities;
-using Minimarket.Core.QueryFilters;
-using Minimarket.Core.Interfaces;
 using Minimarket.Core.Enum;
-using System.Reflection.Metadata.Ecma335;
 using Minimarket.Core.Exceptions;
+using Minimarket.Core.Interface;
+using Minimarket.Core.QueryFilters;
+using Minimarket.Infraestructure.Validations;
+using System.Net;
 
 namespace Minimarket.Api.Controllers
 {
+    [Authorize]
+    [Produces("application/json")]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:ApiVersion}/[controller]")]
@@ -29,6 +24,7 @@ namespace Minimarket.Api.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IValidatorService _validatorService;
+
         public UserController(IUserService userService, IMapper mapper, IValidatorService validatorService)
         {
             _userService = userService;
@@ -36,9 +32,23 @@ namespace Minimarket.Api.Controllers
             _validatorService = validatorService;
         }
 
-
+        /// <summary>
+        /// Recupera una lista paginada de usuarios (DTO).
+        /// </summary>
+        /// <remarks>
+        /// Puedes aplicar parámetros de filtro (paginación, nombre, email, rol, etc.).
+        /// Devuelve un objeto ApiResponse con los usuarios y los metadatos de paginación.
+        /// </remarks>
+        /// <param name="filters">Filtros de consulta.</param>
+        /// <returns>ApiResponse con IEnumerable&lt;UserDto&gt;.</returns>
+        /// <response code="200">Operación exitosa.</response>
+        /// <response code="400">Solicitud inválida.</response>
+        /// <response code="500">Error interno.</response>
         [HttpGet("dto/mapper")]
-        public async Task<IActionResult> GetUsersDtoMapper([FromQuery]UserQueryFilter filters)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<UserDto>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> GetUsersDtoMapper([FromQuery] UserQueryFilter filters)
         {
             try
             {
@@ -55,10 +65,9 @@ namespace Minimarket.Api.Controllers
                     HasNextPage = users.Pagination.HasNextPage,
                     HasPreviousPage = users.Pagination.HasPreviousPage
                 };
+
                 var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
                 {
-
-                    //statusCode = users.StatusCode,
                     Pagination = pagination,
                     Messages = users.Messages
                 };
@@ -69,17 +78,23 @@ namespace Minimarket.Api.Controllers
             {
                 var responsePost = new ResponseData()
                 {
-                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
+                    Messages = new[] { new Message { Type = TypeMessage.error.ToString(), Description = err.Message } }
                 };
                 return StatusCode(400, responsePost);
             }
-
         }
 
-
-
+        /// <summary>
+        /// Recupera un usuario por su Id.
+        /// </summary>
+        /// <param name="id">Id del usuario.</param>
+        /// <returns>ApiResponse con UserDto.</returns>
+        /// <response code="200">Operación exitosa.</response>
+        /// <response code="404">Usuario no encontrado.</response>
         [HttpGet("dto/mapper/{id}")]
-        public async Task<IActionResult> getUserById(int id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<UserDto>))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetUserByIdDtoMapper(int id)
         {
             try
             {
@@ -94,24 +109,31 @@ namespace Minimarket.Api.Controllers
             }
         }
 
-        [HttpPost("dto/mapper/")]
-        public async Task<IActionResult> InsertUser([FromBody] UserDto userDto)
+        /// <summary>
+        /// Inserta un nuevo usuario.
+        /// </summary>
+        /// <param name="userDto">DTO con los datos del usuario a registrar.</param>
+        /// <returns>ApiResponse con el usuario creado.</returns>
+        /// <response code="200">Usuario creado exitosamente.</response>
+        /// <response code="400">Validación fallida o datos incorrectos.</response>
+        /// <response code="409">Conflicto (usuario ya existe).</response>
+        [HttpPost("dto/mapper")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<UserDto>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
+        public async Task<IActionResult> InsertUserDtoMapper(UserDto userDto)
         {
             try
             {
                 var validationResult = await _validatorService.ValidateAsync(userDto);
-                        
                 if (!validationResult.IsValid)
-                {
-                    
                     return BadRequest(new { Errors = validationResult.Errors });
-                }
 
                 var user = _mapper.Map<User>(userDto);
                 await _userService.InsertAsync(user);
+                userDto.Id = user.Id;
 
-                var response = new ApiResponse<User>(user);
-
+                var response = new ApiResponse<UserDto>(userDto);
                 return Ok(response);
             }
             catch (BussinesException ex)
@@ -120,16 +142,29 @@ namespace Minimarket.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza un usuario por su Id.
+        /// </summary>
+        /// <param name="id">Id del usuario a actualizar.</param>
+        /// <param name="userDto">DTO con la información modificada.</param>
+        /// <returns>ApiResponse con el usuario actualizado.</returns>
+        /// <response code="200">Actualización exitosa.</response>
+        /// <response code="400">Id no coincide o datos incorrectos.</response>
+        /// <response code="404">Usuario no encontrado.</response>
         [HttpPut("dto/mapper/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<User>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> UpdateUserDtoMapper(int id, UserDto userDto)
         {
-            try { 
-                var user = await _userService.GetByIdAsync(id);
-                if(id != userDto.Id)
-                    throw new BussinesException("El ID del usuario no coincide con el ID de la ruta", 400);
+            try
+            {
+                if (id != userDto.Id)
+                    throw new BussinesException("El ID del usuario no coincide", (int)HttpStatusCode.BadRequest);
 
+                var user = await _userService.GetByIdAsync(id);
                 if (user == null)
-                    throw new BussinesException("El usuario no existe.", 404);   
+                    throw new BussinesException("Usuario no encontrado", (int)HttpStatusCode.NotFound);
 
                 _mapper.Map(userDto, user);
                 await _userService.UpdateAsync(user);
@@ -143,103 +178,36 @@ namespace Minimarket.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina un usuario por Id.
+        /// </summary>
+        /// <param name="id">Id del usuario a eliminar.</param>
+        /// <response code="204">Eliminación exitosa.</response>
+        /// <response code="404">Usuario no encontrado.</response>
         [HttpDelete("dto/mapper/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> DeleteUserDtoMapper(int id)
         {
-            try { 
+            try
+            {
                 await _userService.DeleteAsync(id);
-                
                 return NoContent();
             }
             catch (BussinesException ex)
             {
                 return StatusCode(ex.StatusCode, ex);
             }
-            
-        }
-        #region Dapper Queries
-        [HttpGet("user-with-most-sales")]
-        public async Task<IActionResult> GetUserWithMostSales()
-        {
-            try
-            {
-                var userWithMostSales = await _userService.GetUserWithMostSales();
-                var response = new ApiResponse<UserWithMostSalesResponse>(userWithMostSales);
-                response.Messages = new Message[] { new() { Type = TypeMessage.success.ToString(), Description = "Usuario con más ventas obtenido correctamente." } };
-                return Ok(response);
-            }
-            catch (BussinesException ex)
-            {
-                return StatusCode(ex.StatusCode, ex);
-            }
-        }   
-
-
-        [HttpGet("age-users")]
-        public async Task<IActionResult> GetAllAgeUsers([FromQuery] AgeUsersPaginationResponse filters)
-        {
-            try
-            {
-                var ageUsers = await _userService.GetAllAgeUsers(filters);
-                var ageUsersDto = _mapper.Map<IEnumerable<AgeOfUsersResponse>>(ageUsers.Pagination);
-                var pagination = new Pagination
-                {
-                    TotalCount = ageUsers.Pagination.TotalCount,
-                    PageSize = ageUsers.Pagination.PageSize,
-                    CurrentPage = ageUsers.Pagination.CurrentPage,
-                    TotalPages = ageUsers.Pagination.TotalPages,
-                    HasNextPage = ageUsers.Pagination.HasNextPage,
-                    HasPreviousPage = ageUsers.Pagination.HasPreviousPage
-                };
-                var response = new ApiResponse<IEnumerable<AgeOfUsersResponse>>(ageUsersDto)
-                {
-                    Pagination = pagination,
-                    Messages = ageUsers.Messages
-                };
-                return StatusCode((int)ageUsers.StatusCode, response);
-            }
-            catch (Exception err)
-            {
-                var responsePost = new ResponseData()
-                {
-                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
-                };
-                return StatusCode(400, responsePost);
-            }
         }
 
-        [HttpGet("summarize-type-of-users")]
-        public async Task<IActionResult> GetSummarizeTypeOfUsers([FromQuery] SummarizeUserTypePagination filters)
+        /// <summary>
+        /// Endpoint de prueba para verificar el estado del controlador de usuarios.
+        /// </summary>
+        [HttpGet("Test")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public IActionResult Test()
         {
-            try
-            {
-                var summarizeTypeOfUsers = await _userService.GetSummarizeTypeOfUsers(filters);
-                var summarizeTypeOfUsersDto = _mapper.Map<IEnumerable<SummarizeTypeOfUsers>>(summarizeTypeOfUsers.Pagination);
-                var pagination = new Pagination
-                {
-                    TotalCount = summarizeTypeOfUsers.Pagination.TotalCount,
-                    PageSize = summarizeTypeOfUsers.Pagination.PageSize,
-                    CurrentPage = summarizeTypeOfUsers.Pagination.CurrentPage,
-                    TotalPages = summarizeTypeOfUsers.Pagination.TotalPages,
-                    HasNextPage = summarizeTypeOfUsers.Pagination.HasNextPage,
-                    HasPreviousPage = summarizeTypeOfUsers.Pagination.HasPreviousPage
-                };
-                var response = new ApiResponse<IEnumerable<SummarizeTypeOfUsers>>(summarizeTypeOfUsersDto)
-                {
-                    Pagination = pagination,
-                    Messages = summarizeTypeOfUsers.Messages
-                };
-                return StatusCode((int)summarizeTypeOfUsers.StatusCode, response);
-            }
-            catch (Exception err)
-            {
-                var responsePost = new ResponseData()
-                {
-                    Messages = new Message[] { new() { Type = TypeMessage.error.ToString(), Description = err.Message } },
-                };
-                return StatusCode(400, responsePost);
-            }
+            return Ok(new { status = "UserController OK" });
         }
-        #endregion
     }
 }

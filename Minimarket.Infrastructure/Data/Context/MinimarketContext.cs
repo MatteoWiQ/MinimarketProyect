@@ -25,8 +25,16 @@ public partial class MinimarketContext : DbContext
     public virtual DbSet<Security> Securities { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=true;TrustServerCertificate=true;");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            // Fallback para herramientas de diseño. Preferible: establecer la variable de entorno
+            // "ConnectionStrings__ConnectionSqlServer" o usar un DesignTimeDbContextFactory para migraciones.
+            var conn = Environment.GetEnvironmentVariable("ConnectionStrings__ConnectionSqlServer")
+                       ?? "Server=MATEOQAYLAS;Database=MinimarketDB;Trusted_Connection=true;TrustServerCertificate=true;";
+            optionsBuilder.UseSqlServer(conn);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
