@@ -16,6 +16,7 @@ using Minimarket.Infrastructure.Data.Context;
 using Minimarket.Infrastructure.Filters;
 using Minimarket.Infrastructure.Repositories;
 using Minimarket.Infrastructure.Validations;
+using Pomelo.EntityFrameworkCore.MySql.Internal;
 using SocialMedia.Infrastructure.Data;
 
 internal class Program
@@ -118,7 +119,17 @@ internal class Program
 
 
         builder.Services.AddDbContext<MinimarketContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionSqlServer")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("ConnectionSqlServer"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,                 // Número máximo de reintentos
+                maxRetryDelay: TimeSpan.FromSeconds(10), // Tiempo de espera máximo entre reintentos
+                errorNumbersToAdd: null            // Opcional: códigos de error específicos para reintentar
+            );
+        }));
+
 
         builder.Services.AddControllers();
 
@@ -132,7 +143,7 @@ internal class Program
             {
                 Title = "Backend Minimarket API",
                 Version = "v1",
-                Description = "Documentación de la API de Minimarket - .NET 9",
+                Description = "Documentación de la API de Minimarket - .NET 9 (https://github.com/MatteoWiQ/MinimarketProyect)",
                 Contact = new()
                 {
                     Name = "Mateo Wilson Quispe Aylas",
@@ -144,8 +155,6 @@ internal class Program
             if(File.Exists(xmlPath))
                 options.IncludeXmlComments(xmlPath);
             options.EnableAnnotations();
-;
-
         });
 
         #endregion

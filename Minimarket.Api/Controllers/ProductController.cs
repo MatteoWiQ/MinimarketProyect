@@ -47,10 +47,12 @@ namespace Minimarket.Api.Controllers
         /// <returns>ApiResponse con IEnumerable&lt;ProductDto&gt; y paginación.</returns>
         /// <response code="200">Operación exitosa, devuelve lista paginada.</response>
         /// <response code="400">Solicitud inválida o error en la entrada.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         /// <response code="500">Error interno del servidor.</response>
         [HttpGet("dto/mapper")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<ProductDto>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetProductsDtoMapper([FromQuery] ProductQueryFilter filter)
         {
@@ -92,10 +94,12 @@ namespace Minimarket.Api.Controllers
         /// <param name="id">Identificador del producto.</param>
         /// <returns>ApiResponse con ProductDto.</returns>
         /// <response code="200">Operación exitosa.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         /// <response code="404">Producto no encontrado.</response>
         [HttpGet("dto/mapper/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<ProductDto>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetProductByIdDtoMapper(int id)
         {
             try
@@ -119,11 +123,13 @@ namespace Minimarket.Api.Controllers
         /// <returns>ApiResponse con el ProductDto insertado (Id ya asignado).</returns>
         /// <response code="200">Inserción exitosa.</response>
         /// <response code="400">Validación fallida.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         /// <response code="409">Conflicto (ej. producto ya existe) si se lanza BussinesException.</response>
         [HttpPost("dto/mapper")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<ProductDto>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> InsertProductDtoMapper(ProductDto productDto)
         {
             try
@@ -156,11 +162,13 @@ namespace Minimarket.Api.Controllers
         /// <returns>ApiResponse con el producto actualizado.</returns>
         /// <response code="200">Actualización exitosa.</response>
         /// <response code="400">Id no coincide o solicitud inválida.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         /// <response code="404">Producto no encontrado.</response>
         [HttpPut("dto/mapper/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<Product>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> UpdateProductDtoMapper(int id, ProductDto productDto)
         {
             try
@@ -190,10 +198,12 @@ namespace Minimarket.Api.Controllers
         /// </summary>
         /// <param name="id">Id del producto a eliminar.</param>
         /// <response code="204">Eliminación exitosa (No Content).</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         /// <response code="404">Producto no encontrado.</response>
         [HttpDelete("dto/mapper/{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> DeleteProductDtoMapper(int id)
         {
             try
@@ -215,9 +225,12 @@ namespace Minimarket.Api.Controllers
         /// <param name="filter">Filtros de paginación y búsqueda.</param>
         /// <returns>ApiResponse con IEnumerable&lt;GetProductsOrderByQuantitySoldResponse&gt;.</returns>
         /// <response code="200">Operación exitosa.</response>
+        /// <response code="400">Solicitud inválida o error en la entrada.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         [HttpGet("dto/mapper/products-order-by-quantity-sold")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<GetProductsOrderByQuantitySoldResponse>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetProductsOrderByQuantitySoldDtoMapper([FromQuery] ProductSoldQueryPaginationResponse filter)
         {
             try
@@ -258,9 +271,12 @@ namespace Minimarket.Api.Controllers
         /// <param name="filter">Filtros opcionales.</param>
         /// <returns>ApiResponse con ProductQueriesResponse.</returns>
         /// <response code="200">Operacion exitosa.</response>
+        /// <response code="400">Solicitud inválida o error en la entrada.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         [HttpGet("dto/mapper/most-expensive-product")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<ProductQueriesResponse>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetMostExpensiveProductDtoMapper([FromQuery] ProductQueryFilter filter)
         {
             try
@@ -287,9 +303,12 @@ namespace Minimarket.Api.Controllers
         /// <param name="filter">Filtros de consulta/paginación.</param>
         /// <returns>ApiResponse con IEnumerable&lt;ProductQueriesResponse&gt;.</returns>
         /// <response code="200">Operacion exitosa.</response>
+        /// <response code="400">Solicitud inválida o error en la entrada.</response>
+        /// <response code="401">No autorizado. Token JWT inválido o expirado.</response>
         [HttpGet("dto/mapper/products-that-never-sold")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<ProductQueriesResponse>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetProductsThatNeverSoldDtoMapper([FromQuery] ProductQueryFilter filter)
         {
             try
@@ -323,11 +342,12 @@ namespace Minimarket.Api.Controllers
         }
         #endregion
 
-
         [HttpGet("Test")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> Test()
         {
-            var result = new 
+            var result = new
             {
                 connectionSqlServer = _configuration.GetConnectionString("SqlServerConnection") != null,
             };
