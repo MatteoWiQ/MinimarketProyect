@@ -32,7 +32,7 @@ internal class Program
             Console.WriteLine("User Secrets habilitados para desarrollo");
 
         }
-
+        
 
         builder.Configuration.Sources.Clear();
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -221,16 +221,18 @@ internal class Program
 
         var app = builder.Build();
 
-        // uso del swagger
-        if (app.Environment.IsDevelopment())
-        {
+        app.UseStaticFiles();
+
+        //uso del swagger
+        //if (app.Environment.IsDevelopment())
+        //{
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Minimarket API V1");
                 options.RoutePrefix = string.Empty;
             });
-        }
+        //}
         // Configure the HTTP request pipeline.
         app.UseHttpsRedirection();
 

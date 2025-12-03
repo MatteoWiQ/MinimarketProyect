@@ -12,6 +12,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="Files\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
@@ -32,6 +35,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Minimarket.Core\Minimarket.Core.csproj" />
     <ProjectReference Include="..\Minimarket.Infrastructure\Minimarket.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

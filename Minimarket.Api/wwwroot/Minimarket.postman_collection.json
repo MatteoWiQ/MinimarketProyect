@@ -1,0 +1,1069 @@
+{
+	"info": {
+		"_postman_id": "e62a73d0-dacc-4377-9ab6-876bc79ef789",
+		"name": "Minimarket",
+		"description": "Proyecto minimercado",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47765819"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Queries",
+					"item": [
+						{
+							"name": "User with most sales",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/user/user-with-most-sales",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"user-with-most-sales"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Age of users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/user/age-users?pageNumer=1&pageSize=5",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"age-users"
+									],
+									"query": [
+										{
+											"key": "pageNumer",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Summarize users role",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/user/summarize-type-of-users?pageNumbre=1&pageSize=10",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"summarize-type-of-users"
+									],
+									"query": [
+										{
+											"key": "pageNumbre",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetAllUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IlVzdWFyaW8gQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NzgyMDM1LCJleHAiOjE3NjQ3ODIwMzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.d_Zh25mPOtE4LddCpXQ-Ac0yRvyOad3y7b1nKI0vQ7w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/user/dto/mapper?pageNumber=1&pageSize=11",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"dto",
+								"mapper"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/User/dto/mapper/900",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"User",
+								"dto",
+								"mapper",
+								"900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userType\": \"Customer\",\r\n    \"firstName\": \"María\",\r\n    \"lastName\": \"Castro\",\r\n    \"email\": \"maria.castro@example.com\",\r\n    \"dateOfBirth\": \"2010-10-20\",\r\n    \"telephone\": \"63728198\",\r\n    \"isActive\": true,\r\n    \"createdAt\": \"2025-10-08\",\r\n    \"password\" : \"maria2005\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/User/dto/mapper/",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"User",
+								"dto",
+								"mapper",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 12,       \r\n    \"userType\": \"Customer\",\r\n    \"firstName\": \"María\",\r\n    \"lastName\": \"Suarez\",\r\n    \"email\": \"maria.suarez@example.com\",\r\n    \"dateOfBirth\": \"1995-10-20\",\r\n    \"telephone\": \"63728198\",\r\n    \"isActive\": true,\r\n    \"createdAt\": \"2025-10-08T00:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/User/dto/mapper/12",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"User",
+								"dto",
+								"mapper",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/User/dto/mapper/1200",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"User",
+								"dto",
+								"mapper",
+								"1200"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertUserErrors",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userType\": \"\",\r\n    \"firstName\": \"Jorgasfbjklbjkfaewkaewfbjl213231321321231bkhjlaewfbkjldasjnkkndfsaewfbjklfewbklfaewbkhjlfewabhjklfewabhjkfewabjkfewabjkfee\",\r\n    \"lastName\": \"Suarelkqklrkn123nknl1kln123n1k2l3123n012j12n3129321n932112k3k32o1i23n123ino321ni312nio3129bn321n9132n9312n90n0321n0132n01320n1320z\",\r\n    \"email\": \"jorge.suarezexample.com\",\r\n    \"dateOfBirth\": \"1000-06-15\",\r\n    \"telephone\": \"725556123132231123232312313221321331212322131323211321313221366\",\r\n    \"isActive\": true,\r\n    \"createdAt\": \"2025-10-08T20:57:36.0969943\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/User/dto/mapper/",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"User",
+								"dto",
+								"mapper",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Queries",
+					"item": [
+						{
+							"name": "GetProductsOrderByQuantitySold",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/product/dto/mapper/products-order-by-quantity-sold?pageNumber=1&pageSize=10",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"product",
+										"dto",
+										"mapper",
+										"products-order-by-quantity-sold"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MostExpensiveProduct",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/product/dto/mapper/most-expensive-product",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"product",
+										"dto",
+										"mapper",
+										"most-expensive-product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ProductsThatNeverSold",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/product/dto/mapper/products-that-never-sold?pageNumber=1&pageSize=4",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"product",
+										"dto",
+										"mapper",
+										"products-that-never-sold"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetAllProducts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IlVzdWFyaW8gQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NzA3OTA0LCJleHAiOjE3NjQ3MDc5MDQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.A8KgajUNV4_yxUODMWgUHC93XmXgrILGUVSPNu9lCCw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/Product/dto/mapper?pageNumber=1&pageSize=4",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"dto",
+								"mapper"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IkFkbWluaXN0cmF0b3IiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NTQ5ODQ4LCJleHAiOjE3NjQ1NDk4NDgsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.InhVqkM1_zcB3HGey0fz8juzkuzLrj91uC06pWDVfik",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/product/dto/mapper/99",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"product",
+								"dto",
+								"mapper",
+								"99"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IlVzdWFyaW8gQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NzA3OTA0LCJleHAiOjE3NjQ3MDc5MDQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.A8KgajUNV4_yxUODMWgUHC93XmXgrILGUVSPNu9lCCw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Cereal Chocapic\",\r\n    \"productBrand\": \"X\",\r\n    \"description\": \"Cereal de bolitas de cochocolate.\",\r\n    \"price\": 25.0,\r\n    \"stock\": 15,\r\n    \"isActive\": true,\r\n    \"createdAt\": \"2025-10-16T21:23:22.4021857\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/Product/dto/mapper",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"dto",
+								"mapper"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IlVzdWFyaW8gQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NzA3OTA0LCJleHAiOjE3NjQ3MDc5MDQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.A8KgajUNV4_yxUODMWgUHC93XmXgrILGUVSPNu9lCCw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/Product/dto/mapper/16",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"dto",
+								"mapper",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IlVzdWFyaW8gQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NzA3OTA0LCJleHAiOjE3NjQ3MDc5MDQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.A8KgajUNV4_yxUODMWgUHC93XmXgrILGUVSPNu9lCCw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\" : 16,\r\n    \"name\": \"Coca Cola 2L\",\r\n    \"productBrand\": \"Coca Cola\",\r\n    \"description\": \"Refresco de Coca Cola de 2L\",\r\n    \"price\": 25.0,\r\n    \"stock\": 20,\r\n    \"isActive\": true,\r\n    \"createdAt\": \"2025-10-16T21:23:22.4021857\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/Product/dto/mapper/16",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"dto",
+								"mapper",
+								"16"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sale",
+			"item": [
+				{
+					"name": "GetAllSales",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IkFkbWluaXN0cmF0b3IiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NTUwNTYxLCJleHAiOjE3NjQ1NTA1NjEsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.Y8kckV245P0slI_ITu4dOwn9PYXA91z6IPF8hakGAVw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/sale/dto/mapper/?pageNumber=1&pageSize=5",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sale",
+								"dto",
+								"mapper",
+								""
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSalesById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/sale/dto/mapper/4",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sale",
+								"dto",
+								"mapper",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertSale",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerName\": \"Carlos Torrez\",\r\n    \"customerId\": 4,\r\n    \"date\": \"2025-10-16T17:23:22.41\",\r\n    \"paymentMethod\": \"Card\",\r\n    \"isDone\": true,\r\n    \"totalAmount\": 0.00\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/sale/dto/mapper/",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sale",
+								"dto",
+								"mapper",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateSale",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 9,\r\n    \"customerName\": \"Carlos Perez\",\r\n    \"customerId\": 4,\r\n    \"date\": \"2025-10-16T17:23:22.41\",\r\n    \"paymentMethod\": \"Card\",\r\n    \"isDone\": true,\r\n    \"totalAmount\": 0.00\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/sale/dto/mapper/",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sale",
+								"dto",
+								"mapper",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ProductInSale",
+			"item": [
+				{
+					"name": "Queries",
+					"item": [
+						{
+							"name": "All Details Product In Sale",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/productinsale/all-details/?pageSize=5&pageNumber",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"productinsale",
+										"all-details",
+										""
+									],
+									"query": [
+										{
+											"key": "pageSize",
+											"value": "5"
+										},
+										{
+											"key": "pageNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "All Details Product In Sale Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/productinsale/product-with-highest-quantity/",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"productinsale",
+										"product-with-highest-quantity",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Product Quantity By Sale",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/productinsale/product-quantity-by-sale/?pageSize=5&pageNumber",
+									"protocol": "https",
+									"host": [
+										"minimarket-api-bfazbqefgmhbh3aj",
+										"westus3-01",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"v1",
+										"productinsale",
+										"product-quantity-by-sale",
+										""
+									],
+									"query": [
+										{
+											"key": "pageSize",
+											"value": "5"
+										},
+										{
+											"key": "pageNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetAllProductInSaleById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImFkbWluIiwiTmFtZSI6IkFkbWluaXN0cmF0b3IiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzY0NTUwODk2LCJleHAiOjE3NjQ1NTA4OTYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzU0LyJ9.-KFBa8MTRKaxRJn5ux64gBn5b3IgK3EVmIStoKG1zb0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idSale\": 2,\r\n    \"idProduct\": 0,\r\n    \"quantity\": 1,\r\n    \"unitPrice\": 25.00,\r\n    \"createdAt\": \"2025-10-16T21:23:22.4227102\"\r\n}"
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/productinsale/dto/mapper/?IdSale=2&pageNumber=1&pageSize=5",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"productinsale",
+								"dto",
+								"mapper",
+								""
+							],
+							"query": [
+								{
+									"key": "IdSale",
+									"value": "2"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertProductInSale",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idSale\": 2,\r\n    \"idProduct\": 10,\r\n    \"quantity\": 1,\r\n    \"unitPrice\": 25.00,\r\n    \"createdAt\": \"2025-10-16T21:23:22.4227102\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/productinsale/dto/mapper/",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"productinsale",
+								"dto",
+								"mapper",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idSale\": 2,\r\n    \"idProduct\": 6,\r\n    \"quantity\": 2,\r\n    \"unitPrice\": 15.00,\r\n    \"createdAt\": \"2025-10-16T21:23:22.4227102\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/v1/productinsale/dto/mapper/",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"v1",
+								"productinsale",
+								"dto",
+								"mapper",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idSale\": 2,\r\n    \"idProduct\": 0,\r\n    \"quantity\": 1,\r\n    \"unitPrice\": 25.00,\r\n    \"createdAt\": \"2025-10-16T21:23:22.4227102\"\r\n}"
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/productinsale/dto/mapper/2/10",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"productinsale",
+								"dto",
+								"mapper",
+								"2",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Token",
+			"item": [
+				{
+					"name": "GetToken",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\" : \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://minimarket-api-bfazbqefgmhbh3aj.westus3-01.azurewebsites.net/api/Token",
+							"protocol": "https",
+							"host": [
+								"minimarket-api-bfazbqefgmhbh3aj",
+								"westus3-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"Token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
